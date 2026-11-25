@@ -25,7 +25,7 @@ function VerificationPage({
   return (
     <>
       <PortalHeader />
-      <main className="verification-page">
+      <main className="container container--narrow verification-page">
         <div className="verify-title">
           <Button
             variant="back"

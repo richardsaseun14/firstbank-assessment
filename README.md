@@ -53,6 +53,12 @@ Example:
 
 The button variants map to the existing portal CSS classes, so the shared component standardizes behavior while the styles remain in `src/index.css`.
 
+### Layout containers
+
+`src/index.css` defines a reusable `.container` class for centered content with a maximum width and responsive side gutters. Size modifiers set the intended content width: `.container--wide` for the main site content, `.container--narrow` for the verification and update forms, `.container--legal` for legal copy, and `.container--footer` for footer content. The gutters adjust at tablet and mobile breakpoints, so each page does not need its own width and margin calculations.
+
+Example: `className="container container--narrow verification-page"` uses the shared layout sizing, while `verification-page` keeps its page-specific vertical spacing.
+
 The project uses mock account and verification details. It does not send OTPs, save uploaded files, or submit account changes to a banking service.
 
 Open the app with the query string simulateFailure=1 to view the failed submission state.

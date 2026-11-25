@@ -162,7 +162,7 @@ function PortalFooter() {
   return (
     <>
       <footer className="site-footer">
-        <div className="footer-main">
+        <div className="container container--footer footer-main">
           <div className="footer-topline">
             <div className="footer-brand">
               <img

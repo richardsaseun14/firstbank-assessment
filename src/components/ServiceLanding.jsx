@@ -86,7 +86,7 @@ function ServiceLanding({ onSelectIdentity }) {
   return (
     <>
       <PortalHeader />
-      <main className="landing-main">
+      <main className="container container--wide landing-main">
         <p className="landing-prompt">
           Kindly select an account management service
         </p>

@@ -31,7 +31,7 @@ function UpdateForm({
         setTerms={setTermsAccepted}
         onOpenTerms={() => onOpenLegal('terms')}
       />
-      <main className="update-page">
+      <main className="container container--narrow update-page">
         <div className="update-title">
           <Button
             variant="back"

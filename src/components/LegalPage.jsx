@@ -30,7 +30,7 @@ function LegalPage({
         setTerms={setTermsAccepted}
         onOpenTerms={() => {}}
       />
-      <main className="legal-page">
+      <main className="container container--legal legal-page">
         <Button
           className="legal-back"
           onClick={onBack}

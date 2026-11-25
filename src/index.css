@@ -37,14 +37,38 @@ button {
 a {
   color: inherit;
 }
+.container {
+  --container-max: 1312px;
+  --container-gutter: 80px;
+  width: min(var(--container-max), calc(100% - var(--container-gutter)));
+  margin-inline: auto;
+}
+.container--wide {
+  --container-max: 1312px;
+  --container-gutter: 80px;
+}
+.container--narrow {
+  --container-max: 812px;
+  --container-gutter: 48px;
+}
+.container--legal {
+  --container-max: 1040px;
+  --container-gutter: 56px;
+}
+.container--footer {
+  --container-max: 1282px;
+  --container-gutter: 48px;
+}
 .site-header {
   height: 140px;
-  padding: 0 max(calc((100% - 1312px) / 2), 40px);
+  position: relative;
+  background: #fff;
+}
+.site-header-inner {
+  height: 100%;
   display: flex;
   align-items: center;
-  position: relative;
   justify-content: space-between;
-  background: #fff;
 }
 .firstbank-logo {
   width: 150px;
@@ -98,15 +122,11 @@ a {
   align-items: center;
 }
 .portal-band > div {
-  width: min(1312px, calc(100% - 80px));
-  margin: auto;
   font-size: 23px;
   font-weight: 400;
 }
 .landing-main {
-  max-width: 1312px;
   padding: 22px 0 100px;
-  margin: auto;
 }
 .landing-prompt {
   color: #7a7a7a;
@@ -196,11 +216,10 @@ a {
   height: 700px;
   background: url('/firstbank-symbol.svg') center / contain no-repeat;
   opacity: 0.055;
+  filter: grayscale(1);
   pointer-events: none;
 }
 .footer-main {
-  max-width: 1282px;
-  margin: auto;
   position: relative;
   z-index: 1;
 }
@@ -243,8 +262,7 @@ a {
   gap: 18px;
 }
 .social-links a {
-  width: 56px;
-  height: 56px;
+  padding: 16px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -309,17 +327,15 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 156px;
   border: 0;
   background: #fff;
   color: #013b65;
-  padding: 14px 10px;
+  padding: 38px 12px;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   text-transform: uppercase;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.08em;
   box-shadow: 0 2px 10px #061d3333;
 }
@@ -349,7 +365,6 @@ a {
 
 .verification-page,
 .update-page {
-  width: min(812px, calc(100% - 48px));
   margin: 22px auto 75px;
 }
 .verify-title,
@@ -500,7 +515,6 @@ a {
   border-radius: 3px;
 }
 .update-page {
-  width: min(812px, calc(100% - 48px));
   margin-top: 22px;
 }
 .update-form > label:not(:first-child) {
@@ -657,8 +671,6 @@ a {
   margin: 18px 0 -16px;
 }
 .legal-page {
-  max-width: 1040px;
-  width: calc(100% - 56px);
   margin: 22px auto 70px;
 }
 .legal-page h1 {
@@ -750,9 +762,6 @@ a {
 }
 
 @media (max-width: 1400px) {
-  .landing-main {
-    width: calc(100% - 80px);
-  }
   .service-grid {
     gap: 34px;
   }
@@ -760,14 +769,18 @@ a {
 @media (max-width: 850px) {
   .site-header {
     height: 105px;
-    padding: 0 26px;
   }
   .portal-band > div {
-    width: calc(100% - 52px);
     font-size: 20px;
   }
+  .container--wide {
+    --container-gutter: 52px;
+  }
+  .container--narrow,
+  .container--legal {
+    --container-gutter: 48px;
+  }
   .landing-main {
-    width: calc(100% - 52px);
     padding-top: 20px;
   }
   .service-grid {
@@ -795,7 +808,6 @@ a {
 @media (max-width: 600px) {
   .site-header {
     height: 82px;
-    padding: 0 17px;
   }
   .firstbank-logo,
   .firstbank-logo img {
@@ -820,11 +832,17 @@ a {
     height: 52px;
   }
   .portal-band > div {
-    width: calc(100% - 34px);
     font-size: 17px;
   }
+  .container--wide,
+  .container--narrow {
+    --container-gutter: 34px;
+  }
+  .container--legal,
+  .container--footer {
+    --container-gutter: 36px;
+  }
   .landing-main {
-    width: calc(100% - 34px);
     padding: 18px 0 50px;
   }
   .landing-prompt {
@@ -913,7 +931,6 @@ a {
   }
   .verification-page,
   .update-page {
-    width: calc(100% - 34px);
     margin: 13px auto 45px;
   }
   .verify-title,
@@ -1020,7 +1037,6 @@ a {
     margin-top: 26px;
   }
   .legal-page {
-    width: calc(100% - 36px);
     margin: 16px auto 45px;
   }
   .legal-page h1 {
