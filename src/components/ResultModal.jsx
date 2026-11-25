@@ -1,6 +1,7 @@
 import React from 'react'
 import Icon from '@mdi/react'
 import { mdiCheckCircleOutline, mdiClose } from '@mdi/js'
+import Button from './ui/Button.jsx'
 
 function ResultModal({ type, onClose, onHome }) {
   if (!type) return null
@@ -34,12 +35,12 @@ function ResultModal({ type, onClose, onHome }) {
             : 'Your update request could not be completed. Please visit the nearest branch.'}
         </p>
         <div className="result-actions">
-          <button className="outline-action" onClick={onClose}>
+          <Button variant="outline" onClick={onClose}>
             Close
-          </button>
-          <button className="navy-action" onClick={onHome}>
+          </Button>
+          <Button variant="primary" onClick={onHome}>
             Home
-          </button>
+          </Button>
         </div>
       </section>
     </div>

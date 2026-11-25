@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import Icon from '@mdi/react'
 import { mdiPaperclip, mdiClose, mdiCloudUploadOutline } from '@mdi/js'
+import Button from './ui/Button.jsx'
 
 function UploadBox({ label, file, onFile, required = false }) {
   const inputRef = useRef(null)
@@ -27,8 +28,7 @@ function UploadBox({ label, file, onFile, required = false }) {
           <Icon path={mdiPaperclip} size={0.8} />
           <span>{file.name}</span>
           <small>({(file.size / 1024 / 1024).toFixed(2)} MB)</small>
-          <button
-            type="button"
+          <Button
             aria-label={`Remove ${label}`}
             onClick={() => {
               onFile(null)
@@ -36,12 +36,11 @@ function UploadBox({ label, file, onFile, required = false }) {
             }}
           >
             <Icon path={mdiClose} size={0.75} />
-          </button>
+          </Button>
         </div>
       ) : (
-        <button
-          type="button"
-          className="upload-box"
+        <Button
+          variant="upload"
           onClick={() => inputRef.current?.click()}
           onDragOver={(event) => event.preventDefault()}
           onDrop={(event) => {
@@ -54,7 +53,7 @@ function UploadBox({ label, file, onFile, required = false }) {
             <u>Choose file</u> or drag here
           </span>
           <small>Supported files: PDF and JPG, 10.00MB maximum size</small>
-        </button>
+        </Button>
       )}
       <input
         ref={inputRef}

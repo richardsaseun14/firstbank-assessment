@@ -2,6 +2,7 @@ import React from 'react'
 import Icon from '@mdi/react'
 import { mdiArrowLeft } from '@mdi/js'
 import PortalHeader from './PortalHeader.jsx'
+import Button from './ui/Button.jsx'
 
 const termsText = [
   'I, [Your Full Name or Legal Entity Name], hereby provide my consent to FirstBank to update my account information.',
@@ -30,13 +31,13 @@ function LegalPage({
         onOpenTerms={() => {}}
       />
       <main className="legal-page">
-        <button
+        <Button
           className="legal-back"
           onClick={onBack}
           aria-label="Back to update form"
         >
           <Icon path={mdiArrowLeft} size={1} />
-        </button>
+        </Button>
         {page === 'terms' ? (
           <>
             <h1>Account Maintenance Terms and Conditions</h1>
@@ -91,12 +92,12 @@ function LegalPage({
           </>
         )}
         <div className="legal-actions">
-          <button className="outline-action" onClick={onReject}>
+          <Button variant="outline" onClick={onReject}>
             I Reject
-          </button>
-          <button className="navy-action" onClick={onAgree}>
+          </Button>
+          <Button variant="primary" onClick={onAgree}>
             I Agree
-          </button>
+          </Button>
         </div>
       </main>
     </>

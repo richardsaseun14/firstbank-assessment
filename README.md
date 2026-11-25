@@ -39,6 +39,20 @@ The component responsibilities are:
 
 Icons come from the Material Design Icons package (`@mdi/js` path data rendered with `@mdi/react`).
 
+### UI atoms: Button
+
+`src/components/ui/Button.jsx` is the shared button primitive. Use its `variant` prop to apply an established portal style (`primary`, `outline`, `update`, `back`, `icon`, `help`, `continue`, or `upload`) instead of creating a one-off button implementation. It defaults to `type="button"`, which prevents buttons inside forms from submitting by accident; the form's Update action explicitly opts into `type="submit"`. It also forwards standard button props such as `onClick`, `disabled`, and `aria-label`.
+
+Example:
+
+```jsx
+<Button variant="primary" onClick={acceptTerms}>
+  I Agree
+</Button>
+```
+
+The button variants map to the existing portal CSS classes, so the shared component standardizes behavior while the styles remain in `src/index.css`.
+
 The project uses mock account and verification details. It does not send OTPs, save uploaded files, or submit account changes to a banking service.
 
 Open the app with the query string simulateFailure=1 to view the failed submission state.

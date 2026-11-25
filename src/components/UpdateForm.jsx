@@ -1,8 +1,10 @@
 import React from 'react'
+import clsx from 'clsx'
 import Icon from '@mdi/react'
 import { mdiArrowLeft } from '@mdi/js'
 import PortalHeader from './PortalHeader.jsx'
 import UploadBox from './UploadBox.jsx'
+import Button from './ui/Button.jsx'
 
 function UpdateForm({
   account,
@@ -31,13 +33,13 @@ function UpdateForm({
       />
       <main className="update-page">
         <div className="update-title">
-          <button
-            className="back-arrow"
+          <Button
+            variant="back"
             onClick={onBack}
             aria-label="Back to verification"
           >
             <Icon path={mdiArrowLeft} size={1} />
-          </button>
+          </Button>
           <h1>Identity Document Update</h1>
         </div>
         <div className="gold-rule" />
@@ -71,7 +73,7 @@ function UpdateForm({
           <label htmlFor="identity-type">Identity Document type</label>
           <select
             id="identity-type"
-            className="large-input form-select"
+            className={clsx('large-input', 'form-select')}
             value={docType}
             onChange={(event) => setDocType(event.target.value)}
           >
@@ -143,9 +145,9 @@ function UpdateForm({
               {formError}
             </p>
           )}
-          <button className="update-button" type="submit">
+          <Button variant="update" type="submit">
             Update
-          </button>
+          </Button>
         </form>
       </main>
     </>

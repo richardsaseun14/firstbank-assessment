@@ -1,7 +1,9 @@
 import React from 'react'
+import clsx from 'clsx'
 import Icon from '@mdi/react'
 import { mdiArrowLeft, mdiArrowRight, mdiCheck, mdiInformation } from '@mdi/js'
 import PortalHeader from './PortalHeader.jsx'
+import Button from './ui/Button.jsx'
 
 function VerificationPage({
   account,
@@ -25,13 +27,13 @@ function VerificationPage({
       <PortalHeader />
       <main className="verification-page">
         <div className="verify-title">
-          <button
-            className="back-arrow"
-            onClick={() => onCancel()}
+          <Button
+            variant="back"
+            onClick={onCancel}
             aria-label="Back to services"
           >
             <Icon path={mdiArrowLeft} size={1} />
-          </button>
+          </Button>
           <h1>Identity Document Update</h1>
         </div>
         <div className="gold-rule" />
@@ -57,13 +59,10 @@ function VerificationPage({
                   key={index}
                   ref={(element) => (otpRefs.current[index] = element)}
                   aria-label={`OTP digit ${index + 1}`}
-                  className={
-                    otpStatus === 'invalid'
-                      ? 'otp-invalid'
-                      : otpStatus === 'verified'
-                        ? 'otp-verified'
-                        : ''
-                  }
+                  className={clsx({
+                    'otp-invalid': otpStatus === 'invalid',
+                    'otp-verified': otpStatus === 'verified',
+                  })}
                   value={digit}
                   onChange={(event) => onOtpChange(index, event.target.value)}
                   onKeyDown={(event) => {
@@ -82,7 +81,8 @@ function VerificationPage({
             ) : (
               <span className="resend-text">
                 Didn’t receive OTP?{' '}
-                <button
+                <Button
+                  className="text-button"
                   onClick={() => {
                     setOtp(['', '', '', '', '', ''])
                     setOtpStatus('')
@@ -91,7 +91,7 @@ function VerificationPage({
                   }}
                 >
                   {resend ? 'OTP resent' : 'Resend in 0.56 secs'}
-                </button>
+                </Button>
               </span>
             )}
           </div>
@@ -99,7 +99,7 @@ function VerificationPage({
             <div className="otp-error">
               <Icon path={mdiInformation} size={0.9} />
               The OTP Code inputted is wrong or invalid.{' '}
-              <button onClick={onCancelRequest}>Cancel Request</button>
+              <Button className="text-button" onClick={onCancelRequest}>Cancel Request</Button>
             </div>
           )}
           {verifyError && (
@@ -112,9 +112,9 @@ function VerificationPage({
             +23480******78 and email address ade****yu@gmail.com
           </p>
           {otpStatus === 'verified' && (
-            <button className="verify-continue" onClick={onContinue}>
+            <Button variant="continue" onClick={onContinue}>
               Continue <Icon path={mdiArrowRight} size={0.8} />
-            </button>
+            </Button>
           )}
         </div>
       </main>

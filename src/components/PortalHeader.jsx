@@ -1,6 +1,7 @@
 import React from 'react'
 import Icon from '@mdi/react'
 import { mdiHeadset, mdiMagnify } from '@mdi/js'
+import Button from './ui/Button.jsx'
 
 function PortalHeader({ terms, setTerms, onOpenTerms }) {
   return (
@@ -21,12 +22,12 @@ function PortalHeader({ terms, setTerms, onOpenTerms }) {
         )}
         <div className="header-links">
           <a href="#open-account">Open a FirstBank account</a>
-          <button className="header-search" aria-label="Search">
+          <Button variant="icon" aria-label="Search">
             <Icon path={mdiMagnify} size={1} />
-          </button>
-          <button className="help-button">
+          </Button>
+          <Button variant="help">
             <Icon path={mdiHeadset} size={1} /> Help
-          </button>
+          </Button>
         </div>
       </header>
       <div className="portal-band">
