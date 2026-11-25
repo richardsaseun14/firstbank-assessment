@@ -1,4 +1,5 @@
 import React from 'react'
+import clsx from 'clsx'
 import Icon from '@mdi/react'
 import { mdiArrowLeft } from '@mdi/js'
 import PortalHeader from './PortalHeader.jsx'
@@ -25,22 +26,18 @@ function LegalPage({
 }) {
   return (
     <>
-      <PortalHeader
-        terms={termsAccepted}
-        setTerms={setTermsAccepted}
-        onOpenTerms={() => {}}
-      />
-      <main className="container container--legal legal-page">
-        <Button
-          className="legal-back"
-          onClick={onBack}
-          aria-label="Back to update form"
-        >
-          <Icon path={mdiArrowLeft} size={1} />
-        </Button>
+      {page === 'terms' ? (
+        <PortalHeader
+          terms={termsAccepted}
+          setTerms={setTermsAccepted}
+          onOpenTerms={() => {}}
+        />
+      ) : <PortalHeader />}
+      <main className={clsx('container', 'container--legal', 'legal-page', { 'legal-page--consent': page === 'consent' })}>
+        {page === 'terms' && <Button className="legal-back" onClick={onBack} aria-label="Back to update form"><Icon path={mdiArrowLeft} size={1} /></Button>}
         {page === 'terms' ? (
           <>
-            <h1>Account Maintenance Terms and Conditions</h1>
+            <h1 className="legal-page__title">Account Maintenance Terms and Conditions</h1>
             {termsText.map((text, index) => (
               <p key={index}>{text}</p>
             ))}
@@ -51,44 +48,13 @@ function LegalPage({
           </>
         ) : (
           <>
-            <h1>PERSONAL DATA PROCESSING CONSENT FORM</h1>
-            <h2>Kindly read and accept the following conditions to proceed</h2>
-            <p>
-              To enable First Bank of Nigeria Limited (“FirstBank”) provide you
-              with its products and services, you hereby fully authorize
-              FirstBank and its affiliates in the FBN Holdings Plc Group to
-              collect, record, use, share, store, process and disclose
-              information relating to you and your accounts, including personal
-              data obtained from you or third parties, and usage of your
-              account(s).
-            </p>
-            <p>
-              You further authorize FirstBank and its affiliates to use your
-              information to manage and administer your account, and to share
-              your information with service providers, debt collection agencies,
-              third-party partners, statutory, governmental or regulatory
-              bodies, credit reference and fraud prevention agencies and tax
-              authorities.
-            </p>
-            <p>
-              You acknowledge and agree that any such sharing or transfer of
-              information will be on a confidential basis and according to the
-              provisions of the Nigeria Data Protection Act, 2023. For more
-              information on our privacy policy, please visit the FirstBank
-              website.
-            </p>
-            <p>
-              If you wish to withdraw your consent or have concerns relating to
-              the processing of your personal information, you may do so at any
-              time by notifying FirstBank through its official contact channels.
-            </p>
-            <p>
-              You hereby confirm that you have read and understood the content
-              of this consent form. You grant your consent to FirstBank of
-              Nigeria Ltd to process your information, including personal data
-              and sensitive personal data, to support this account maintenance
-              request.
-            </p>
+            <h1 className="legal-page__title">PERSONAL DATA PROCESSING CONSENT FORM</h1>
+            <h2 className="legal-page__subtitle">Kindly read and accept the following conditions to proceed</h2>
+            <p>To enable First Bank of Nigeria Limited (“FirstBank”) provide you with its products and services, you hereby fully authorize FirstBank and its affiliates in the FBN Holdings Plc Group to collect, record, use, share, store, process and disclose all information (including Personal Data and Sensitive Personal Data as defined in the Nigeria Data Protection Act, 2023 and other applicable Data protection laws/regulations) relating to you and your accounts, including, without limitation, any personal data, information obtained from you or from third parties, usage of your account(s), transactions/payments conducted on your account(s), references provided and any other credit information maintained with or obtained by FirstBank and its affiliates in the FBN Holdings Plc Group (including those obtained from credit reference agencies).</p>
+            <p>You further authorize FirstBank and its affiliates in the FBN Holdings Plc Group to use your information to manage and administer your account, to share your information with service providers, debt collection agencies, third-party partners, third party intermediaries, statutory, governmental or regulatory bodies, credit reference and fraud prevention agencies and tax authorities.</p>
+            <p>You acknowledge and agree that any such sharing or transfer of information will be on a confidential basis and according to the provisions of the Nigerian Data Protection Act, 2023. For more information on our privacy policy, please visit https://www.firstbanknigeria.com/home/legal/privacy-policy/</p>
+            <p>If you wish to withdraw your consent or have concerns relating to the processing of your personal information, you may do so at any time by notifying us through firstcontact@firstbankgroup.com or dataprotectionoffice@firstbankgroup.com. We will respond to your concerns within 30 days of receiving your notice.</p>
+            <p>You hereby confirm that you have read and understood the content of this consent form. You hereby grant your consent to FirstBank of Nigeria Ltd of 35 Marina, Lagos to process your Information including Personal Data and Sensitive Personal Data.</p>
           </>
         )}
         <div className="legal-actions">

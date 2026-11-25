@@ -31,7 +31,7 @@ function App() {
   const [files, setFiles] = useState({ front: null, back: null, utility: null })
   const [modal, setModal] = useState('')
 
-  const go = (destination) => {
+  const go = (destination, navigationState) => {
     const routes = {
       landing: '/',
       verification: '/identity-update/verify',
@@ -40,7 +40,10 @@ function App() {
       consent: '/identity-update/consent',
     }
     setFormError('')
-    navigate(routes[destination] ?? destination)
+    const state = navigationState ?? (destination === 'consent'
+      ? { returnTo: location.pathname === '/' ? 'verification' : 'form' }
+      : undefined)
+    navigate(routes[destination] ?? destination, state ? { state } : undefined)
   }
 
   useEffect(() => {
@@ -97,7 +100,7 @@ function App() {
         <Route
           path="/"
           element={
-            <ServiceLanding onSelectIdentity={() => go('verification')} />
+            <ServiceLanding onSelectIdentity={() => go('consent')} />
           }
         />
         <Route
@@ -186,15 +189,18 @@ function App() {
               page="consent"
               termsAccepted={termsAccepted}
               setTermsAccepted={setTermsAccepted}
-              onBack={() => go('form')}
+              onBack={() => go(location.state?.returnTo === 'verification' ? 'landing' : 'form')}
               onAgree={() => {
                 setConsentAccepted(true)
-                go('form')
+                go(location.state?.returnTo ?? 'verification')
               }}
               onReject={() => {
-                setTermsAccepted(false)
                 setConsentAccepted(false)
-                go('form')
+                if (location.state?.returnTo === 'verification') {
+                  go('landing')
+                } else {
+                  go('form')
+                }
               }}
             />
           }

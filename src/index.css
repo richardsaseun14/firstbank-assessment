@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   color: #151a20;
   background: #fff;
   font-synthesis: none;
@@ -683,11 +683,20 @@ a {
   font-weight: 600;
   margin: 0 0 15px;
 }
+.legal-page__title {
+  margin: 23px 0 28px !important;
+}
+.legal-page__subtitle {
+  margin: 0 0 22px !important;
+}
 .legal-page p {
   font-size: 18px;
   color: #636363;
   line-height: 1.42;
   margin: 0 0 23px;
+}
+.legal-page--consent p {
+  color: #151a20;
 }
 .legal-actions {
   display: flex;
@@ -1043,8 +1052,14 @@ a {
     font-size: 21px;
     margin: 17px 0 16px;
   }
+  .legal-page__title {
+    margin: 17px 0 21px !important;
+  }
   .legal-page h2 {
     font-size: 16px;
+  }
+  .legal-page__subtitle {
+    margin-bottom: 16px !important;
   }
   .legal-page p {
     font-size: 14px;

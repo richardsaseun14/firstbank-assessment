@@ -1,13 +1,15 @@
 import React from 'react'
+import clsx from 'clsx'
 import Icon from '@mdi/react'
 import { mdiHeadset, mdiMagnify } from '@mdi/js'
 import Button from './ui/Button.jsx'
 
-function PortalHeader({ terms, setTerms, onOpenTerms }) {
+function PortalHeader({ terms, setTerms, onOpenTerms, containerSize = 'wide' }) {
+  const containerClass = clsx('container', `container--${containerSize}`)
   return (
     <>
       <header className="site-header">
-        <div className="container container--wide site-header-inner">
+        <div className={clsx(containerClass, 'site-header-inner')}>
           <a className="firstbank-logo" href="#home" aria-label="FirstBank home">
             <img src="/firstbank-logo.png" alt="FirstBank since 1894" />
           </a>
@@ -33,7 +35,7 @@ function PortalHeader({ terms, setTerms, onOpenTerms }) {
         </div>
       </header>
       <div className="portal-band">
-        <div className="container container--wide">Account Management Portal</div>
+        <div className={containerClass}>Account Management Portal</div>
       </div>
     </>
   )

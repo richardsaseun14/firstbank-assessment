@@ -9,6 +9,7 @@ Run npm install, then npm run dev.
 ## Included flow
 
 - Account management service landing page
+- Consent screen before identity update account verification
 - Account number and six digit OTP verification (demo code: 123456)
 - Identity document update form with NIN, document type and number fields
 - Front and back identity document uploads plus utility bill upload
@@ -55,7 +56,7 @@ The button variants map to the existing portal CSS classes, so the shared compon
 
 ### Layout containers
 
-`src/index.css` defines a reusable `.container` class for centered content with a maximum width and responsive side gutters. Size modifiers set the intended content width: `.container--wide` for the main site content, `.container--narrow` for the verification and update forms, `.container--legal` for legal copy, and `.container--footer` for footer content. The gutters adjust at tablet and mobile breakpoints, so each page does not need its own width and margin calculations.
+`src/index.css` defines a reusable `.container` class for centered content with a maximum width and responsive side gutters. The header, portal title bar, and landing service content share `.container--wide`; the footer has its own `.container--footer`. Verification and update forms use `.container--narrow`, while long legal copy uses `.container--legal` for comfortable reading. The gutters adjust at tablet and mobile breakpoints, so each page does not need its own width and margin calculations.
 
 Example: `className="container container--narrow verification-page"` uses the shared layout sizing, while `verification-page` keeps its page-specific vertical spacing.
 
