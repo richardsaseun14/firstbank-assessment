@@ -213,7 +213,7 @@ function PortalFooter() {
               by the Central Bank of Nigeria
             </div>
             <a className="back-to-top" href="#top">
-              Back to Top ↑
+              Back to Top
             </a>
           </div>
         </div>
@@ -236,7 +236,7 @@ function PortalFooter() {
                 rel="noopener noreferrer"
                 onClick={() => setShareOpen(false)}
               >
-                <Icon path={icon} size={1} />
+                <Icon path={icon} size={1.2} />
               </a>
             ))}
           </div>
