@@ -12,8 +12,8 @@ import {
   mdiCardAccountDetails,
 } from '@mdi/js'
 import { mdiCheck } from '@mdi/js'
-import PortalHeader from './PortalHeader.jsx'
-import PortalFooter from './PortalFooter.jsx'
+import PortalHeader from '../components/PortalHeader.jsx'
+import PortalFooter from '../components/PortalFooter.jsx'
 
 const services = [
   [

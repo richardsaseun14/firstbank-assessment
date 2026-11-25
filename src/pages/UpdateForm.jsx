@@ -2,14 +2,13 @@ import React from 'react'
 import { Formik, Form, useFormikContext } from 'formik'
 import Icon from '@mdi/react'
 import { mdiArrowLeft } from '@mdi/js'
-import PortalHeader from './PortalHeader.jsx'
-import UploadBox from './UploadBox.jsx'
-import Button from './ui/Button.jsx'
-import FormField from './ui/FormField.jsx'
+import PortalHeader from '../components/PortalHeader.jsx'
+import UploadBox from '../components/UploadBox.jsx'
+import Button from '../components/ui/Button.jsx'
+import FormField from '../components/ui/FormField.jsx'
 import { validateUpdateForm } from '../formSchema.js'
 
 function UpdateFormFields({
-  setAccount,
   setFields,
   setDocType,
   setFiles,
@@ -27,8 +26,8 @@ function UpdateFormFields({
     touched,
     handleSubmit,
   } = useFormikContext()
+
   React.useEffect(() => {
-    setAccount(values.account)
     setFields({ nin: values.nin, idNumber: values.idNumber })
     setDocType(values.docType)
     setFiles(values.files)
@@ -36,7 +35,6 @@ function UpdateFormFields({
     setConsentAccepted(values.consentAccepted)
   }, [
     values,
-    setAccount,
     setFields,
     setDocType,
     setFiles,
@@ -68,16 +66,7 @@ function UpdateFormFields({
             name="account"
             id="account-form"
             label="Account number"
-            value={values.account}
-            onChange={(event) =>
-              setFieldValue(
-                'account',
-                event.target.value.replace(/\D/g, '').slice(0, 10),
-              )
-            }
-            placeholder="Enter your 10-digits account number"
-            inputMode="numeric"
-            maxLength={10}
+            disabled
           />
           <FormField
             name="nin"

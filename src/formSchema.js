@@ -17,7 +17,7 @@ export function validateAccount(values) {
 
 export const updateFormSchema = z.object({
   account: z.string().regex(/^\d{10}$/, 'Enter a 10-digit account number.'),
-  nin: z.string().regex(/^\d{10,11}$/, 'Enter a 10- or 11-digit NIN.'),
+  nin: z.string().regex(/^\d{11}$/, 'Enter an 11-digit NIN.'),
   docType: z.string().min(1, 'Select an identity document type.'),
   idNumber: z.string().trim().min(1, 'Enter your identity document number.'),
   files: z.object({

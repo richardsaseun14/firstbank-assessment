@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import clsx from 'clsx'
 
-function OtpInput({ value, onChange, invalid = false }) {
+function OtpInput({ value, onChange, invalid = false, disabled = false }) {
   const inputRefs = useRef([])
 
   const updateDigit = (index, rawValue) => {
@@ -21,6 +21,7 @@ function OtpInput({ value, onChange, invalid = false }) {
           aria-label={`OTP digit ${index + 1}`}
           className={clsx({ 'otp-invalid': invalid })}
           value={value[index] ?? ''}
+          disabled={disabled}
           onChange={(event) => updateDigit(index, event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Backspace' && !value[index] && index)

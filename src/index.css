@@ -429,6 +429,44 @@ a {
   color: #202020;
   opacity: 1;
 }
+.input-with-trailing {
+  position: relative;
+  display: block;
+}
+.input-with-trailing .large-input {
+  padding-right: 46px;
+}
+.input-trailing {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+}
+.field-spinner__wheel {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #c7c7c7;
+  border-top-color: #013b65;
+  border-radius: 50%;
+  animation: field-spin 0.7s linear infinite;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@keyframes field-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .upload-error {
   display: block;
   margin-top: 6px;
