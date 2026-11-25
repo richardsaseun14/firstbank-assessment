@@ -18,7 +18,7 @@ function App() {
   const navigate = useNavigate()
   const location = useLocation()
   const [account, setAccount] = useState('')
-  const [verifyError, setVerifyError] = useState('')
+  const [otpError, setOtpError] = useState('')
   const [resend, setResend] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [consentAccepted, setConsentAccepted] = useState(false)
@@ -58,9 +58,12 @@ function App() {
     )
   }
 
-  const continueAfterVerification = () => {
-    if (!/^\d{10}$/.test(account))
-      return setVerifyError('Enter a valid 10-digit account number.')
+  const continueAfterVerification = ({ otp }) => {
+    if (otp !== '123456') {
+      setOtpError('That code is incorrect. Check it and try again.')
+      return
+    }
+    setOtpError('')
     go('form')
   }
 
@@ -77,13 +80,13 @@ function App() {
             <VerificationPage
               account={account}
               setAccount={setAccount}
+              otpError={otpError}
+              clearOtpError={() => setOtpError('')}
               resend={resend}
               onResend={() => setResend(true)}
-              verifyError={verifyError}
-              setVerifyError={setVerifyError}
               onContinue={continueAfterVerification}
               onCancel={() => go('landing')}
-              onCancelRequest={() => setVerifyError('')}
+              onCancelRequest={() => setOtpError('')}
             />
           }
         />

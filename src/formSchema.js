@@ -1,53 +1,35 @@
 import { z } from 'zod'
 
-const acceptedFile = z.custom((file) => file instanceof File, 'Upload a file.')
+const fileSchema = (message) =>
+  z.custom(
+    (file) => typeof File !== 'undefined' && file instanceof File,
+    message,
+  )
 
 export const accountSchema = z
   .string()
-  .regex(/^\d{10}$/, 'Enter a valid 10-digit account number.')
+  .regex(/^\d{10}$/, 'Enter a 10-digit account number.')
 
 export function validateAccount(values) {
   const result = accountSchema.safeParse(values.account)
   return result.success ? {} : { account: result.error.issues[0].message }
 }
 
-const verificationSchema = z.object({
-  account: accountSchema,
-  otp: z
-    .string()
-    .length(6, 'Enter the 6-digit verification code.')
-    .regex(/^\d{6}$/, 'Enter the 6-digit verification code.')
-    .refine((code) => code === '123456', 'The OTP code is wrong or invalid.'),
-})
-
-export function validateVerification(values) {
-  const result = verificationSchema.safeParse(values)
-  if (result.success) return {}
-
-  return result.error.issues.reduce((errors, issue) => {
-    const path = issue.path[0]
-    if (path && !errors[path]) errors[path] = issue.message
-    return errors
-  }, {})
-}
-
 export const updateFormSchema = z.object({
-  account: z
-    .string()
-    .regex(/^\d{10}$/, 'Enter a valid 10-digit account number.'),
-  nin: z.string().regex(/^\d{10,11}$/, 'Enter a valid NIN (10 or 11 digits).'),
-  docType: z.string().min(1, 'Choose an identity document type.'),
+  account: z.string().regex(/^\d{10}$/, 'Enter a 10-digit account number.'),
+  nin: z.string().regex(/^\d{10,11}$/, 'Enter a 10- or 11-digit NIN.'),
+  docType: z.string().min(1, 'Select an identity document type.'),
   idNumber: z.string().trim().min(1, 'Enter your identity document number.'),
   files: z.object({
-    front: acceptedFile,
-    back: acceptedFile,
-    utility: acceptedFile,
+    front: fileSchema('Upload the front of your identity document.'),
+    back: fileSchema('Upload the back of your identity document.'),
+    utility: fileSchema('Upload a utility bill.'),
   }),
   termsAccepted: z.literal(true, {
-    error: 'Accept the terms and data processing consent to continue.',
+    error: 'Accept the terms and conditions.',
   }),
   consentAccepted: z.literal(true, {
-    error: 'Accept the terms and data processing consent to continue.',
+    error: 'Accept the personal data processing consent.',
   }),
 })
 

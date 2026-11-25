@@ -119,13 +119,21 @@ function UpdateFormFields({
             <UploadBox
               label="Upload your Identity Document (Front)"
               file={values.files.front}
-              onFile={(front) => setFieldValue('files.front', front)}
+              onFile={(front) => {
+                setFieldTouched('files.front', true)
+                setFieldValue('files.front', front)
+              }}
+              validationError={touched.files?.front && errors.files?.front}
               required
             />
             <UploadBox
               label="Back"
               file={values.files.back}
-              onFile={(back) => setFieldValue('files.back', back)}
+              onFile={(back) => {
+                setFieldTouched('files.back', true)
+                setFieldValue('files.back', back)
+              }}
+              validationError={touched.files?.back && errors.files?.back}
               required
             />
           </div>
@@ -133,7 +141,11 @@ function UpdateFormFields({
             <UploadBox
               label="Upload your Utility Bill"
               file={values.files.utility}
-              onFile={(utility) => setFieldValue('files.utility', utility)}
+              onFile={(utility) => {
+                setFieldTouched('files.utility', true)
+                setFieldValue('files.utility', utility)
+              }}
+              validationError={touched.files?.utility && errors.files?.utility}
               required
             />
           </div>
@@ -154,6 +166,11 @@ function UpdateFormFields({
                 Accept Terms &amp; Conditions
               </a>
             </label>
+            {touched.termsAccepted && errors.termsAccepted && (
+              <span className="upload-error" role="alert">
+                {errors.termsAccepted}
+              </span>
+            )}
             <label>
               <input
                 type="checkbox"
@@ -167,15 +184,12 @@ function UpdateFormFields({
                 Personal Data Processing Consent
               </a>
             </label>
-          </div>
-          {Object.keys(errors).length > 0 &&
-            Object.keys(touched).length > 0 && (
-              <p className="form-error" role="alert">
-                {Object.values(errors).find(
-                  (error) => typeof error === 'string',
-                ) ?? 'Review the form and try again.'}
-              </p>
+            {touched.consentAccepted && errors.consentAccepted && (
+              <span className="upload-error" role="alert">
+                {errors.consentAccepted}
+              </span>
             )}
+          </div>
           <Button variant="update" type="submit">
             Update
           </Button>

@@ -3,7 +3,7 @@ import Icon from '@mdi/react'
 import { mdiPaperclip, mdiClose, mdiCloudUploadOutline } from '@mdi/js'
 import Button from './ui/Button.jsx'
 
-function UploadBox({ label, file, onFile, required = false }) {
+function UploadBox({ label, file, onFile, required = false, validationError }) {
   const inputRef = useRef(null)
   const [error, setError] = useState('')
   const choose = (candidate) => {
@@ -11,9 +11,9 @@ function UploadBox({ label, file, onFile, required = false }) {
     if (
       !['application/pdf', 'image/jpeg', 'image/png'].includes(candidate.type)
     )
-      return setError('Upload a PDF, JPG or PNG file.')
+      return setError('Choose a PDF, JPG, or PNG file.')
     if (candidate.size > 10 * 1024 * 1024)
-      return setError('File size must be 10 MB or less.')
+      return setError('Choose a file that is 10 MB or smaller.')
     setError('')
     onFile(candidate)
   }
@@ -62,9 +62,9 @@ function UploadBox({ label, file, onFile, required = false }) {
         onChange={(event) => choose(event.target.files?.[0])}
         hidden
       />
-      {error && (
+      {(error || validationError) && (
         <span className="upload-error" role="alert">
-          {error}
+          {error || validationError}
         </span>
       )}
     </div>
