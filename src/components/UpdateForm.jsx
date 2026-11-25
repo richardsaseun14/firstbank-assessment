@@ -1,29 +1,49 @@
 import React from 'react'
-import clsx from 'clsx'
+import { Formik, Form, useFormikContext } from 'formik'
 import Icon from '@mdi/react'
 import { mdiArrowLeft } from '@mdi/js'
 import PortalHeader from './PortalHeader.jsx'
 import UploadBox from './UploadBox.jsx'
 import Button from './ui/Button.jsx'
+import FormField from './ui/FormField.jsx'
+import { validateUpdateForm } from '../formSchema.js'
 
-function UpdateForm({
-  account,
+function UpdateFormFields({
   setAccount,
-  fields,
   setFields,
-  docType,
   setDocType,
-  files,
   setFiles,
   termsAccepted,
   setTermsAccepted,
-  consentAccepted,
   setConsentAccepted,
-  formError,
-  onSubmit,
   onBack,
   onOpenLegal,
 }) {
+  const {
+    values,
+    setFieldValue,
+    setFieldTouched,
+    errors,
+    touched,
+    handleSubmit,
+  } = useFormikContext()
+  React.useEffect(() => {
+    setAccount(values.account)
+    setFields({ nin: values.nin, idNumber: values.idNumber })
+    setDocType(values.docType)
+    setFiles(values.files)
+    setTermsAccepted(values.termsAccepted)
+    setConsentAccepted(values.consentAccepted)
+  }, [
+    values,
+    setAccount,
+    setFields,
+    setDocType,
+    setFiles,
+    setTermsAccepted,
+    setConsentAccepted,
+  ])
+
   return (
     <>
       <PortalHeader
@@ -43,75 +63,77 @@ function UpdateForm({
           <h1>Identity Document Update</h1>
         </div>
         <div className="gold-rule" />
-        <form className="update-form" onSubmit={onSubmit} noValidate>
-          <label htmlFor="account-form">Account number</label>
-          <input
+        <Form className="update-form" noValidate onSubmit={handleSubmit}>
+          <FormField
+            name="account"
             id="account-form"
-            className="large-input"
-            value={account}
+            label="Account number"
+            value={values.account}
             onChange={(event) =>
-              setAccount(event.target.value.replace(/\D/g, '').slice(0, 10))
+              setFieldValue(
+                'account',
+                event.target.value.replace(/\D/g, '').slice(0, 10),
+              )
             }
             placeholder="Enter your 10-digits account number"
             inputMode="numeric"
             maxLength={10}
           />
-          <label htmlFor="nin">NIN</label>
-          <input
-            id="nin"
-            className="large-input"
-            value={fields.nin}
+          <FormField
+            name="nin"
+            label="NIN"
+            value={values.nin}
             onChange={(event) =>
-              setFields({
-                ...fields,
-                nin: event.target.value.replace(/\D/g, '').slice(0, 11),
-              })
+              setFieldValue(
+                'nin',
+                event.target.value.replace(/\D/g, '').slice(0, 11),
+              )
             }
             placeholder="Enter your NIN"
             inputMode="numeric"
           />
-          <label htmlFor="identity-type">Identity Document type</label>
-          <select
+          <FormField
+            as="select"
+            name="docType"
             id="identity-type"
-            className={clsx('large-input', 'form-select')}
-            value={docType}
-            onChange={(event) => setDocType(event.target.value)}
+            label="Identity Document type"
+            className="large-input form-select"
+            value={values.docType}
+            onChange={(event) => setFieldValue('docType', event.target.value)}
           >
             <option value="">Choose Identity Document type</option>
             <option>National ID Card</option>
             <option>International Passport</option>
             <option>Driver’s Licence</option>
             <option>Voters Card</option>
-          </select>
-          <label htmlFor="id-number">Identity Document number</label>
-          <input
+          </FormField>
+          <FormField
+            name="idNumber"
             id="id-number"
-            className="large-input"
-            value={fields.idNumber}
-            onChange={(event) =>
-              setFields({ ...fields, idNumber: event.target.value })
-            }
+            label="Identity Document number"
+            value={values.idNumber}
+            onChange={(event) => setFieldValue('idNumber', event.target.value)}
             placeholder="Enter the Identity Document number"
           />
           <div className="identity-uploads">
             <UploadBox
               label="Upload your Identity Document (Front)"
-              file={files.front}
-              onFile={(front) => setFiles({ ...files, front })}
+              file={values.files.front}
+              onFile={(front) => setFieldValue('files.front', front)}
               required
             />
             <UploadBox
               label="Back"
-              file={files.back}
-              onFile={(back) => setFiles({ ...files, back })}
+              file={values.files.back}
+              onFile={(back) => setFieldValue('files.back', back)}
               required
             />
           </div>
           <div className="utility-upload">
             <UploadBox
               label="Upload your Utility Bill"
-              file={files.utility}
-              onFile={(utility) => setFiles({ ...files, utility })}
+              file={values.files.utility}
+              onFile={(utility) => setFieldValue('files.utility', utility)}
               required
             />
           </div>
@@ -122,8 +144,11 @@ function UpdateForm({
             <label>
               <input
                 type="checkbox"
-                checked={termsAccepted}
-                onChange={(event) => setTermsAccepted(event.target.checked)}
+                checked={values.termsAccepted}
+                onBlur={() => setFieldTouched('termsAccepted', true)}
+                onChange={(event) =>
+                  setFieldValue('termsAccepted', event.target.checked)
+                }
               />
               <a onClick={() => onOpenLegal('terms')}>
                 Accept Terms &amp; Conditions
@@ -132,25 +157,54 @@ function UpdateForm({
             <label>
               <input
                 type="checkbox"
-                checked={consentAccepted}
-                onChange={(event) => setConsentAccepted(event.target.checked)}
+                checked={values.consentAccepted}
+                onBlur={() => setFieldTouched('consentAccepted', true)}
+                onChange={(event) =>
+                  setFieldValue('consentAccepted', event.target.checked)
+                }
               />
               <a onClick={() => onOpenLegal('consent')}>
                 Personal Data Processing Consent
               </a>
             </label>
           </div>
-          {formError && (
-            <p className="form-error" role="alert">
-              {formError}
-            </p>
-          )}
+          {Object.keys(errors).length > 0 &&
+            Object.keys(touched).length > 0 && (
+              <p className="form-error" role="alert">
+                {Object.values(errors).find(
+                  (error) => typeof error === 'string',
+                ) ?? 'Review the form and try again.'}
+              </p>
+            )}
           <Button variant="update" type="submit">
             Update
           </Button>
-        </form>
+        </Form>
       </main>
     </>
+  )
+}
+
+function UpdateForm(props) {
+  const initialValues = {
+    account: props.account,
+    nin: props.fields.nin,
+    idNumber: props.fields.idNumber,
+    docType: props.docType,
+    files: props.files,
+    termsAccepted: props.termsAccepted,
+    consentAccepted: props.consentAccepted,
+  }
+  return (
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize
+      validateOnBlur
+      validate={validateUpdateForm}
+      onSubmit={props.onSubmit}
+    >
+      <UpdateFormFields {...props} />
+    </Formik>
   )
 }
 

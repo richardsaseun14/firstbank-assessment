@@ -429,6 +429,12 @@ a {
   color: #202020;
   opacity: 1;
 }
+.upload-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #ce342c;
+}
 .otp-label {
   margin-top: 22px !important;
 }

@@ -1,27 +1,28 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import { Formik, Form, useFormikContext } from 'formik'
 import clsx from 'clsx'
 import Icon from '@mdi/react'
 import { mdiArrowLeft, mdiArrowRight, mdiCheck, mdiInformation } from '@mdi/js'
 import PortalHeader from './PortalHeader.jsx'
 import Button from './ui/Button.jsx'
+import FormField from './ui/FormField.jsx'
+import { validateVerification } from '../formSchema.js'
 
-function VerificationPage({
+function VerificationPageFields({
   account,
   setAccount,
-  otp,
-  otpStatus,
-  onOtpChange,
-  otpRefs,
   resend,
   onResend,
-  setOtp,
-  setOtpStatus,
   verifyError,
   setVerifyError,
-  onContinue,
   onCancel,
   onCancelRequest,
 }) {
+  const otpRefs = useRef([])
+  const { values, errors, setFieldValue } = useFormikContext()
+  const otpStatus =
+    values.otp.length === 6 ? (errors.otp ? 'invalid' : 'verified') : ''
+
   return (
     <>
       <PortalHeader />
@@ -37,14 +38,16 @@ function VerificationPage({
           <h1>Identity Document Update</h1>
         </div>
         <div className="gold-rule" />
-        <div className="verify-form">
-          <label htmlFor="account-number">Account number</label>
-          <input
+        <Form className="verify-form" noValidate>
+          <FormField
+            name="account"
             id="account-number"
-            className="large-input"
+            label="Account number"
             value={account}
             onChange={(event) => {
-              setAccount(event.target.value.replace(/\D/g, '').slice(0, 10))
+              const next = event.target.value.replace(/\D/g, '').slice(0, 10)
+              setAccount(next)
+              setFieldValue('account', next)
               setVerifyError('')
             }}
             placeholder="Enter your 10-digits account number"
@@ -54,7 +57,7 @@ function VerificationPage({
           <label className="otp-label">Phone number verification</label>
           <div className="otp-line">
             <div className="otp-cells">
-              {otp.map((digit, index) => (
+              {Array.from({ length: 6 }, (_, index) => (
                 <input
                   key={index}
                   ref={(element) => (otpRefs.current[index] = element)}
@@ -63,10 +66,22 @@ function VerificationPage({
                     'otp-invalid': otpStatus === 'invalid',
                     'otp-verified': otpStatus === 'verified',
                   })}
-                  value={digit}
-                  onChange={(event) => onOtpChange(index, event.target.value)}
+                  value={values.otp[index] ?? ''}
+                  onChange={(event) => {
+                    const digit = event.target.value
+                      .replace(/\D/g, '')
+                      .slice(-1)
+                    const next = values.otp.split('')
+                    next[index] = digit
+                    setFieldValue('otp', next.join(''))
+                    if (digit && index < 5) otpRefs.current[index + 1]?.focus()
+                  }}
                   onKeyDown={(event) => {
-                    if (event.key === 'Backspace' && !digit && index)
+                    if (
+                      event.key === 'Backspace' &&
+                      !values.otp[index] &&
+                      index
+                    )
                       otpRefs.current[index - 1]?.focus()
                   }}
                   inputMode="numeric"
@@ -84,8 +99,7 @@ function VerificationPage({
                 <Button
                   className="text-button"
                   onClick={() => {
-                    setOtp(['', '', '', '', '', ''])
-                    setOtpStatus('')
+                    setFieldValue('otp', '')
                     onResend()
                     otpRefs.current[0]?.focus()
                   }}
@@ -98,8 +112,16 @@ function VerificationPage({
           {otpStatus === 'invalid' && (
             <div className="otp-error">
               <Icon path={mdiInformation} size={0.9} />
-              The OTP Code inputted is wrong or invalid.{' '}
-              <Button className="text-button" onClick={onCancelRequest}>Cancel Request</Button>
+              {errors.otp}{' '}
+              <Button
+                className="text-button"
+                onClick={() => {
+                  setFieldValue('otp', '')
+                  onCancelRequest()
+                }}
+              >
+                Cancel Request
+              </Button>
             </div>
           )}
           {verifyError && (
@@ -112,13 +134,26 @@ function VerificationPage({
             +23480******78 and email address ade****yu@gmail.com
           </p>
           {otpStatus === 'verified' && (
-            <Button variant="continue" onClick={onContinue}>
+            <Button variant="continue" type="submit">
               Continue <Icon path={mdiArrowRight} size={0.8} />
             </Button>
           )}
-        </div>
+        </Form>
       </main>
     </>
+  )
+}
+
+function VerificationPage(props) {
+  return (
+    <Formik
+      initialValues={{ account: props.account, otp: '' }}
+      validateOnBlur
+      validate={validateVerification}
+      onSubmit={props.onContinue}
+    >
+      <VerificationPageFields {...props} />
+    </Formik>
   )
 }
 
