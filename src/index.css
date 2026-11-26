@@ -451,6 +451,17 @@ a {
   border-radius: 50%;
   animation: field-spin 0.7s linear infinite;
 }
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.page-loader .field-spinner__wheel {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
 .sr-only {
   position: absolute;
   width: 1px;

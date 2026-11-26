@@ -46,6 +46,7 @@ An international passport requires two identity uploads, front and back. A natio
 Screen components live in `src/pages/`; reusable UI and layout components live in `src/components/`. The component responsibilities are:
 
 - `pages/ServiceLanding.jsx`: service cards and landing page composition.
+- `pages/IdentityUpdateRoute.jsx`: lazily loaded entry for `/identity-update/*`; wraps the flow in `IdentityUpdateProvider`. `App.jsx` loads it with `React.lazy`, so Formik, Zod and the form pages stay out of the initial bundle.
 - `pages/IdentityUpdateFlow.jsx`: route composition and navigation for the identity update process.
 - `pages/VerificationPage.jsx`: account lookup feedback, OTP instructions, and verification flow.
 - `pages/UpdateForm.jsx`: identity details, uploads, terms acceptance, and submit action.

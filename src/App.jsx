@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
 import {
   Navigate,
   Route,
@@ -7,8 +7,11 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import ServiceLanding from './pages/ServiceLanding.jsx'
-import IdentityUpdateFlow from './pages/IdentityUpdateFlow.jsx'
-import IdentityUpdateProvider from './contexts/IdentityUpdateContext.jsx'
+import PageLoader from './components/PageLoader.jsx'
+
+const IdentityUpdateRoute = lazy(
+  () => import('./pages/IdentityUpdateRoute.jsx'),
+)
 
 function App() {
   const navigate = useNavigate()
@@ -35,9 +38,9 @@ function App() {
       <Route
         path="/identity-update/*"
         element={
-          <IdentityUpdateProvider>
-            <IdentityUpdateFlow />
-          </IdentityUpdateProvider>
+          <Suspense fallback={<PageLoader />}>
+            <IdentityUpdateRoute />
+          </Suspense>
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
