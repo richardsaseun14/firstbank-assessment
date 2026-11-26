@@ -24,6 +24,7 @@ function UpdateFormFields({
     errors,
     touched,
     handleSubmit,
+    isSubmitting,
   } = useFormikContext()
 
   React.useEffect(() => {
@@ -132,7 +133,7 @@ function UpdateFormFields({
               />
             )}
           </div>
-          <div className="utility-upload">
+          <div className="utility-upload" id="utility-upload">
             <UploadBox
               label="Upload your Utility Bill"
               file={values.files.utility}
@@ -167,8 +168,8 @@ function UpdateFormFields({
               </span>
             )}
           </div>
-          <Button variant="update" type="submit">
-            Update
+          <Button variant="update" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting…' : 'Update'}
           </Button>
         </Form>
       </main>

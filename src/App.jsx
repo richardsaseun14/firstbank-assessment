@@ -25,7 +25,7 @@ function App() {
         element={
           <ServiceLanding
             onSelectIdentity={() =>
-              navigate('/identity-update/consent', {
+              navigate(`/identity-update/consent${location.search}`, {
                 state: { returnTo: 'verification' },
               })
             }

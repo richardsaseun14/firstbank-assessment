@@ -2,6 +2,17 @@ const wait = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds))
 
 export default class MockBankServer {
+  async submitIdentityUpdate(values, outcome = 'success') {
+    await wait(1000)
+    const outcomes = [
+      'success',
+      'failure',
+      'additional-document',
+      'account-information',
+    ]
+    return { status: outcomes.includes(outcome) ? outcome : 'success' }
+  }
+
   async confirmAccountAndSendOtp(accountNumber) {
     await wait(1200)
 

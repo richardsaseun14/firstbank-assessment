@@ -63,7 +63,10 @@ function IdentityUpdateFlow() {
       (destination === 'consent'
         ? { returnTo: location.pathname === '/' ? 'verification' : 'form' }
         : undefined)
-    navigate(routes[destination] ?? destination, state ? { state } : undefined)
+    navigate(
+      { pathname: routes[destination] ?? destination, search: location.search },
+      state ? { state } : undefined,
+    )
   }
 
   const updateFormPage = (
@@ -79,7 +82,7 @@ function IdentityUpdateFlow() {
         termsAccepted={termsAccepted}
         setTermsAccepted={setTermsAccepted}
         formError={formError}
-        onSubmit={() => submitForm(location.search)}
+        onSubmit={(values) => submitForm(values, location.search)}
         onBack={() => {
           resetOtpVerification()
           setFormUnlocked(false)
@@ -89,6 +92,13 @@ function IdentityUpdateFlow() {
       <ResultModal
         type={modal}
         onClose={() => setModal('')}
+        onSkip={() => setModal('success')}
+        onUpload={() => {
+          setModal('')
+          document
+            .getElementById('utility-upload')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }}
         onHome={() => {
           setModal('')
           go('landing')
@@ -174,7 +184,15 @@ function IdentityUpdateFlow() {
           />
         }
       />
-      <Route index element={<Navigate to="verify" replace />} />
+      <Route
+        index
+        element={
+          <Navigate
+            to={{ pathname: 'verify', search: location.search }}
+            replace
+          />
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

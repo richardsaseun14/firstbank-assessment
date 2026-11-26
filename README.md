@@ -79,3 +79,5 @@ Example: `className="container container--narrow verification-page"` uses the sh
 The project uses mock account and verification details. It does not send real OTPs, save uploaded files, or submit account changes to a banking service.
 
 Open the app with the query string simulateFailure=1 to view the failed submission state.
+
+The mock submission defaults to success. Add `?mockResult=failure`, `?mockResult=additional-document`, or `?mockResult=account-information` to the landing page URL to simulate the other responses. The query parameter is preserved through consent, verification, and terms until submission. The account information form is not yet implemented, so its Complete now button is disabled. The additional-document response can be simulated even when a utility bill has already been attached; Upload now returns to that field.

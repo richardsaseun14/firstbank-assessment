@@ -92,13 +92,18 @@ export default function IdentityUpdateProvider({ children }) {
     return true
   }
 
-  const submitForm = (search = '') => {
+  const submitForm = async (values, search = '') => {
     setFormError('')
-    setModal(
-      new URLSearchParams(search).get('simulateFailure') === '1'
-        ? 'failure'
-        : 'success',
-    )
+    const params = new URLSearchParams(search)
+    const outcome =
+      params.get('mockResult') ??
+      (params.get('simulateFailure') === '1' ? 'failure' : 'success')
+    try {
+      const result = await mockBankServer.submitIdentityUpdate(values, outcome)
+      setModal(result.status)
+    } catch {
+      setModal('failure')
+    }
   }
 
   const value = {
