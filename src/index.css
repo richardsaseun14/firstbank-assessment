@@ -682,7 +682,7 @@ a {
   flex-direction: column;
   gap: 14px;
 }
-.consent-checks label,
+.consent-check,
 .terms-header-check {
   display: flex;
   align-items: center;
@@ -696,11 +696,19 @@ a {
   height: 19px;
   margin: 0;
 }
-.consent-checks a,
-.terms-header-check a {
+.consent-link {
+  border: 0;
+  padding: 0;
+  background: none;
   color: #013b65;
+  font-size: inherit;
+  line-height: inherit;
+  text-align: left;
   text-decoration: underline;
   cursor: pointer;
+}
+.terms-header-check__text {
+  color: #013b65;
 }
 .update-button {
   display: block;
@@ -821,6 +829,25 @@ a {
 }
 .result-actions button {
   width: 192px;
+}
+.error-fallback {
+  margin: 80px auto;
+}
+.error-fallback h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.error-fallback p {
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+.error-fallback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
 }
 
 @media (max-width: 1400px) {
@@ -1086,7 +1113,7 @@ a {
   .consent-checks {
     gap: 11px;
   }
-  .consent-checks label {
+  .consent-check {
     gap: 10px;
     font-size: 12px;
   }
@@ -1137,7 +1164,8 @@ a {
     width: 15px;
     height: 15px;
   }
-  .terms-header-check a {
+  .terms-header-check .consent-link,
+  .terms-header-check__text {
     max-width: 106px;
     line-height: 1.2;
   }

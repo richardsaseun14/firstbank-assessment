@@ -9,10 +9,8 @@ import FormField from '../components/ui/FormField.jsx'
 import { validateUpdateForm } from '../formSchema.js'
 
 function UpdateFormFields({
-  setFields,
+  setFormDraft,
   outstandingRequired,
-  setDocType,
-  setFiles,
   setTermsAccepted,
   onBack,
   onOpenLegal,
@@ -26,13 +24,15 @@ function UpdateFormFields({
     handleSubmit,
     isSubmitting,
   } = useFormikContext()
+  const termsError = touched.termsAccepted && errors.termsAccepted
 
+  // Formik owns the values while this page is mounted. Copy them to the
+  // provider so they survive a visit to the terms page, which unmounts the form.
   React.useEffect(() => {
-    setFields({ nin: values.nin, idNumber: values.idNumber })
-    setDocType(values.docType)
-    setFiles(values.files)
-    setTermsAccepted(values.termsAccepted)
-  }, [values, setFields, setDocType, setFiles, setTermsAccepted])
+    const { termsAccepted, ...draft } = values
+    setFormDraft(draft)
+    setTermsAccepted(termsAccepted)
+  }, [values, setFormDraft, setTermsAccepted])
 
   return (
     <>
@@ -199,22 +199,32 @@ function UpdateFormFields({
             Document must be clear, legible and genuine. Upload uprightly
           </p>
           <div className="consent-checks">
-            <label>
+            {/* The link is a sibling of the checkbox, not inside a label, so
+                opening the terms never ticks the box. */}
+            <div className="consent-check">
               <input
+                id="terms-accepted"
                 type="checkbox"
                 checked={values.termsAccepted}
+                aria-labelledby="terms-link"
+                aria-invalid={Boolean(termsError) || undefined}
+                aria-describedby={termsError ? 'terms-error' : undefined}
                 onBlur={() => setFieldTouched('termsAccepted', true)}
                 onChange={(event) =>
                   setFieldValue('termsAccepted', event.target.checked)
                 }
               />
-              <a onClick={() => onOpenLegal('terms')}>
+              <Button
+                id="terms-link"
+                className="consent-link"
+                onClick={() => onOpenLegal('terms')}
+              >
                 Accept Terms &amp; Conditions
-              </a>
-            </label>
-            {touched.termsAccepted && errors.termsAccepted && (
-              <span className="upload-error" role="alert">
-                {errors.termsAccepted}
+              </Button>
+            </div>
+            {termsError && (
+              <span id="terms-error" className="upload-error" role="alert">
+                {termsError}
               </span>
             )}
           </div>
@@ -228,23 +238,16 @@ function UpdateFormFields({
 }
 
 function UpdateForm(props) {
+  // Read once on mount. Do not add enableReinitialize: the provider changes on
+  // every keystroke, and reinitializing would reset touched fields and errors.
   const initialValues = {
-    occupation: '',
-    natureOfBusiness: '',
-    employerName: '',
-    employerAddress: '',
-    annualTurnover: '',
+    ...props.formDraft,
     account: props.account,
-    nin: props.fields.nin,
-    idNumber: props.fields.idNumber,
-    docType: props.docType,
-    files: props.files,
     termsAccepted: props.termsAccepted,
   }
   return (
     <Formik
       initialValues={initialValues}
-      enableReinitialize
       validateOnBlur
       validate={(values) => {
         const errors = validateUpdateForm(values)

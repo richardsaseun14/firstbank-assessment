@@ -4,6 +4,21 @@ import MockBankServer from '../services/MockBankServer.js'
 
 const mockBankServer = new MockBankServer()
 
+// Values entered on the update form, kept here so they survive route changes.
+// The terms flag and account number have their own state because other screens
+// set them; the form always takes those two from that state on mount.
+const emptyFormDraft = {
+  nin: '',
+  docType: '',
+  idNumber: '',
+  files: { front: null, back: null, utility: null },
+  occupation: '',
+  natureOfBusiness: '',
+  employerName: '',
+  employerAddress: '',
+  annualTurnover: '',
+}
+
 export default function IdentityUpdateProvider({ children }) {
   const [account, setAccount] = useState('')
   const [otpError, setOtpError] = useState('')
@@ -16,9 +31,7 @@ export default function IdentityUpdateProvider({ children }) {
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [consentAccepted, setConsentAccepted] = useState(false)
   const [formError, setFormError] = useState('')
-  const [docType, setDocType] = useState('')
-  const [fields, setFields] = useState({ nin: '', idNumber: '' })
-  const [files, setFiles] = useState({ front: null, back: null, utility: null })
+  const [formDraft, setFormDraft] = useState(emptyFormDraft)
   const [modal, setModal] = useState('')
   const [outstandingRequired, setOutstandingRequired] = useState(false)
   const accountRequestId = useRef(0)
@@ -128,12 +141,8 @@ export default function IdentityUpdateProvider({ children }) {
     setConsentAccepted,
     formError,
     setFormError,
-    docType,
-    setDocType,
-    fields,
-    setFields,
-    files,
-    setFiles,
+    formDraft,
+    setFormDraft,
     modal,
     setModal,
     outstandingRequired,

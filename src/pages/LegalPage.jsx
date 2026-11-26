@@ -27,11 +27,7 @@ function LegalPage({
   return (
     <>
       {page === 'terms' ? (
-        <PortalHeader
-          terms={termsAccepted}
-          setTerms={setTermsAccepted}
-          onOpenTerms={() => {}}
-        />
+        <PortalHeader terms={termsAccepted} setTerms={setTermsAccepted} />
       ) : (
         <PortalHeader />
       )}

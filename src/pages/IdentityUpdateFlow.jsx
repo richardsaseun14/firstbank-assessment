@@ -27,15 +27,12 @@ function IdentityUpdateFlow() {
     resendSeconds,
     termsAccepted,
     setTermsAccepted,
+    consentAccepted,
     setConsentAccepted,
     formError,
     setFormError,
-    docType,
-    setDocType,
-    fields,
-    setFields,
-    files,
-    setFiles,
+    formDraft,
+    setFormDraft,
     modal,
     setModal,
     outstandingRequired,
@@ -79,12 +76,8 @@ function IdentityUpdateFlow() {
       <UpdateForm
         account={account}
         outstandingRequired={outstandingRequired}
-        fields={fields}
-        setFields={setFields}
-        docType={docType}
-        setDocType={setDocType}
-        files={files}
-        setFiles={setFiles}
+        formDraft={formDraft}
+        setFormDraft={setFormDraft}
         termsAccepted={termsAccepted}
         setTermsAccepted={setTermsAccepted}
         formError={formError}
@@ -124,7 +117,18 @@ function IdentityUpdateFlow() {
       <Route
         index
         element={
-          formUnlocked ? (
+          // Data processing consent comes before account verification, so a
+          // direct visit to this URL is sent to the consent screen first.
+          !consentAccepted ? (
+            <Navigate
+              to={{
+                pathname: '/identity-update/consent',
+                search: location.search,
+              }}
+              state={{ returnTo: 'verification' }}
+              replace
+            />
+          ) : formUnlocked ? (
             updateFormPage
           ) : (
             <VerificationPage
@@ -161,7 +165,6 @@ function IdentityUpdateFlow() {
             }}
             onReject={() => {
               setTermsAccepted(false)
-              setConsentAccepted(false)
               go('identityUpdate')
             }}
           />

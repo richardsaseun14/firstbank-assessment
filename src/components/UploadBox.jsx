@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useId, useRef, useState } from 'react'
 import Icon from '@mdi/react'
 import { mdiPaperclip, mdiClose, mdiCloudUploadOutline } from '@mdi/js'
 import Button from './ui/Button.jsx'
@@ -6,6 +6,11 @@ import Button from './ui/Button.jsx'
 function UploadBox({ label, file, onFile, required = false, validationError }) {
   const inputRef = useRef(null)
   const [error, setError] = useState('')
+  const id = useId()
+  const buttonId = `${id}-button`
+  const hintId = `${id}-hint`
+  const errorId = `${id}-error`
+  const message = error || validationError
   const choose = (candidate) => {
     if (!candidate) return
     if (
@@ -19,9 +24,15 @@ function UploadBox({ label, file, onFile, required = false, validationError }) {
   }
   return (
     <div className="upload-field">
-      <label>
+      {/* A label can name a button. The file input itself is hidden, so the
+          label points at the button that opens the file picker. */}
+      <label htmlFor={file ? undefined : buttonId}>
         {label}
-        {required && <span className="req">*</span>}
+        {required && (
+          <span className="req" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       {file ? (
         <div className="attached-file">
@@ -40,7 +51,9 @@ function UploadBox({ label, file, onFile, required = false, validationError }) {
         </div>
       ) : (
         <Button
+          id={buttonId}
           variant="upload"
+          aria-describedby={message ? `${hintId} ${errorId}` : hintId}
           onClick={() => inputRef.current?.click()}
           onDragOver={(event) => event.preventDefault()}
           onDrop={(event) => {
@@ -52,7 +65,9 @@ function UploadBox({ label, file, onFile, required = false, validationError }) {
           <span>
             <u>Choose file</u> or drag here
           </span>
-          <small>Supported files: PDF and JPG, 10.00MB maximum size</small>
+          <small id={hintId}>
+            Supported files: PDF and JPG, 10.00MB maximum size
+          </small>
         </Button>
       )}
       <input
@@ -62,9 +77,9 @@ function UploadBox({ label, file, onFile, required = false, validationError }) {
         onChange={(event) => choose(event.target.files?.[0])}
         hidden
       />
-      {(error || validationError) && (
-        <span className="upload-error" role="alert">
-          {error || validationError}
+      {message && (
+        <span id={errorId} className="upload-error" role="alert">
+          {message}
         </span>
       )}
     </div>

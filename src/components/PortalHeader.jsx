@@ -23,14 +23,32 @@ function PortalHeader({
             <img src="/firstbank-logo.png" alt="FirstBank since 1894" />
           </a>
           {terms !== undefined && (
-            <label className="terms-header-check">
+            <div className="terms-header-check">
               <input
+                id="header-terms"
                 type="checkbox"
                 checked={terms}
+                aria-labelledby="header-terms-text"
                 onChange={(event) => setTerms(event.target.checked)}
               />
-              <a onClick={onOpenTerms}>Accept Terms &amp; Conditions</a>
-            </label>
+              {onOpenTerms ? (
+                <Button
+                  id="header-terms-text"
+                  className="consent-link"
+                  onClick={onOpenTerms}
+                >
+                  Accept Terms &amp; Conditions
+                </Button>
+              ) : (
+                <label
+                  id="header-terms-text"
+                  htmlFor="header-terms"
+                  className="terms-header-check__text"
+                >
+                  Accept Terms &amp; Conditions
+                </label>
+              )}
+            </div>
           )}
           <div className="header-links">
             <a href="#open-account">Open a FirstBank account</a>

@@ -8,6 +8,8 @@ import FormField from '../components/ui/FormField.jsx'
 import OtpInput from '../components/ui/OtpInput.jsx'
 import { validateAccount } from '../formSchema.js'
 
+const emptyOtp = ['', '', '', '', '', '']
+
 function VerificationPageFields({
   account,
   setAccount,
@@ -26,6 +28,11 @@ function VerificationPageFields({
 }) {
   const { values, setFieldValue } = useFormikContext()
   const verifiedNavigationTimer = useRef(null)
+
+  const cancelVerifiedNavigation = () => {
+    window.clearTimeout(verifiedNavigationTimer.current)
+    verifiedNavigationTimer.current = null
+  }
 
   useEffect(
     () => () => window.clearTimeout(verifiedNavigationTimer.current),
@@ -66,7 +73,10 @@ function VerificationPageFields({
               setAccount(next)
               setFieldValue('account', next)
               if (next !== values.account) {
-                setFieldValue('otp', '')
+                // A verified OTP belongs to the old number, so the pending
+                // move to the form must not run for the new one.
+                cancelVerifiedNavigation()
+                setFieldValue('otp', emptyOtp)
                 resetOtpVerification()
                 onAccountChange(next)
               }
@@ -91,8 +101,8 @@ function VerificationPageFields({
                   onChange={(otp) => {
                     setFieldValue('otp', otp)
                     resetOtpVerification()
-                    if (otp.length === 6) {
-                      void verifyOtp(otp).then((verified) => {
+                    if (otp.every(Boolean)) {
+                      void verifyOtp(otp.join('')).then((verified) => {
                         if (verified) {
                           verifiedNavigationTimer.current = window.setTimeout(
                             onVerified,
@@ -118,7 +128,7 @@ function VerificationPageFields({
                       className="text-button"
                       disabled={resendSeconds > 0 || isResolvingAccount}
                       onClick={() => {
-                        setFieldValue('otp', '')
+                        setFieldValue('otp', emptyOtp)
                         resetOtpVerification()
                         void onSendOtp(values.account)
                       }}
@@ -137,7 +147,7 @@ function VerificationPageFields({
                   <Button
                     className="text-button"
                     onClick={() => {
-                      setFieldValue('otp', '')
+                      setFieldValue('otp', emptyOtp)
                       resetOtpVerification()
                     }}
                   >
@@ -163,7 +173,7 @@ function VerificationPageFields({
 function VerificationPage(props) {
   return (
     <Formik
-      initialValues={{ account: props.account, otp: '' }}
+      initialValues={{ account: props.account, otp: emptyOtp }}
       validateOnBlur
       validate={validateAccount}
     >
