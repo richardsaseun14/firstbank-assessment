@@ -52,8 +52,8 @@ function IdentityUpdateFlow() {
   const go = (destination, navigationState) => {
     const routes = {
       landing: '/',
-      verification: '/identity-update/verify',
-      form: '/identity-update/verify',
+      verification: '/identity-update',
+      identityUpdate: '/identity-update',
       terms: '/identity-update/terms',
       consent: '/identity-update/consent',
     }
@@ -61,7 +61,10 @@ function IdentityUpdateFlow() {
     const state =
       navigationState ??
       (destination === 'consent'
-        ? { returnTo: location.pathname === '/' ? 'verification' : 'form' }
+        ? {
+            returnTo:
+              location.pathname === '/' ? 'verification' : 'identityUpdate',
+          }
         : undefined)
     navigate(
       { pathname: routes[destination] ?? destination, search: location.search },
@@ -110,7 +113,7 @@ function IdentityUpdateFlow() {
   return (
     <Routes>
       <Route
-        path="verify"
+        index
         element={
           formUnlocked ? (
             updateFormPage
@@ -142,15 +145,15 @@ function IdentityUpdateFlow() {
             page="terms"
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
-            onBack={() => go('form')}
+            onBack={() => go('identityUpdate')}
             onAgree={() => {
               setTermsAccepted(true)
-              go('form')
+              go('identityUpdate')
             }}
             onReject={() => {
               setTermsAccepted(false)
               setConsentAccepted(false)
-              go('form')
+              go('identityUpdate')
             }}
           />
         }
@@ -166,7 +169,7 @@ function IdentityUpdateFlow() {
               go(
                 location.state?.returnTo === 'verification'
                   ? 'landing'
-                  : 'form',
+                  : 'identityUpdate',
               )
             }
             onAgree={() => {
@@ -178,18 +181,9 @@ function IdentityUpdateFlow() {
               go(
                 location.state?.returnTo === 'verification'
                   ? 'landing'
-                  : 'form',
+                  : 'identityUpdate',
               )
             }}
-          />
-        }
-      />
-      <Route
-        index
-        element={
-          <Navigate
-            to={{ pathname: 'verify', search: location.search }}
-            replace
           />
         }
       />

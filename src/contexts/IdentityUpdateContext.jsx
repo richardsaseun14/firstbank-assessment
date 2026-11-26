@@ -97,7 +97,7 @@ export default function IdentityUpdateProvider({ children }) {
     const params = new URLSearchParams(search)
     const outcome =
       params.get('mockResult') ??
-      (params.get('simulateFailure') === '1' ? 'failure' : 'success')
+      (params.get('simulateFailure') === '1' ? 'failure' : undefined)
     try {
       const result = await mockBankServer.submitIdentityUpdate(values, outcome)
       setModal(result.status)

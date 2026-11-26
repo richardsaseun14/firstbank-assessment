@@ -23,7 +23,7 @@ Use `nvm install` and `nvm use` to select the Node version in `.nvmrc`, then run
 This is a React single-page application. `BrowserRouter` in `src/main.jsx` reads the browser URL and lets React Router render the matching screen without reloading the document. `src/App.jsx` routes the landing page and mounts the identity update provider; `src/pages/IdentityUpdateFlow.jsx` maps the identity update URLs to page components:
 
 - `/` — service selection
-- `/identity-update/verify` — account confirmation and OTP, followed by identity details and document uploads on the same page
+- `/identity-update` — account confirmation and OTP, followed by identity details and document uploads on the same page
 - `/identity-update/terms` — account maintenance terms
 - `/identity-update/consent` — personal data consent
 
@@ -36,6 +36,8 @@ This is a React single-page application. `BrowserRouter` in `src/main.jsx` reads
 `src/services/MockBankServer.js` contains the class used to simulate account and OTP calls. Entering a 10 digit account number starts `confirmAccountAndSendOtp()`. The account input shows a loader while the mock call waits, then the OTP instructions and inputs appear if the account is accepted. The mock accepts any 10 digit number except `0000000000` and returns sample account and masked contact details. Resending the OTP uses the same mock method.
 
 Entering the sixth OTP digit calls `verifyOtp()` automatically. The mock accepts `123456` and rejects other codes. An incorrect code shows an error below the inputs. A correct code replaces the resend prompt with a check mark; after two seconds, the identity fields appear on the same page. These calls do not contact a bank or send real messages; replace the mock class with a real API client when a backend is available.
+
+For a demo, use account number `1234567890` and OTP `123456`.
 
 ### Document uploads
 
@@ -80,4 +82,15 @@ The project uses mock account and verification details. It does not send real OT
 
 Open the app with the query string simulateFailure=1 to view the failed submission state.
 
-The mock submission defaults to success. Add `?mockResult=failure`, `?mockResult=additional-document`, or `?mockResult=account-information` to the landing page URL to simulate the other responses. The query parameter is preserved through consent, verification, and terms until submission. The account information form is not yet implemented, so its Complete now button is disabled. The additional-document response can be simulated even when a utility bill has already been attached; Upload now returns to that field.
+The mock submission uses the last four digits of the 11-digit NIN. For example:
+
+| Example NIN   | Mock response                |
+| ------------- | ---------------------------- |
+| `12345671111` | Success                      |
+| `12345672222` | Failure                      |
+| `12345673333` | Additional document required |
+| `12345674444` | Account information required |
+
+Other NINs default to success.
+
+Alternatively, add `?mockResult=success`, `?mockResult=failure`, `?mockResult=additional-document`, or `?mockResult=account-information` to the landing page URL. A valid URL parameter overrides the NIN and is preserved through consent, verification, and terms until submission. The account information form is not yet implemented, so its Complete now button is disabled. The additional-document response can be simulated even when a utility bill has already been attached; Upload now returns to that field.
