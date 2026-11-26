@@ -12,9 +12,10 @@ Run npm install, then npm run dev.
 - Consent screen before identity update account verification
 - Account number and six digit OTP verification (demo code: 123456)
 - Identity document update form with NIN, document type and number fields
-- Front and back identity document uploads plus utility bill upload
+- Document uploads based on identity type, plus a utility bill upload
 - File type and 10 MB size validation, drag and drop, remove and replace
 - Account maintenance terms and data processing consent screens
+- Terms acceptance on the update form; personal data consent is handled on the earlier consent screen
 - Form validation and successful submission dialog
 
 ## Routing and code structure
@@ -36,12 +37,16 @@ This is a React single-page application. `BrowserRouter` in `src/main.jsx` reads
 
 Entering the sixth OTP digit calls `verifyOtp()` automatically. The mock accepts `123456` and rejects other codes. An incorrect code shows an error below the inputs. A correct code replaces the resend prompt with a check mark; after two seconds, the identity fields appear on the same page. These calls do not contact a bank or send real messages; replace the mock class with a real API client when a backend is available.
 
+### Document uploads
+
+An international passport requires two identity uploads, front and back. A national ID card, driver's licence, or voter’s card requires one identity upload. A utility bill is required for every document type. Changing the document type clears any previously selected identity files. The form accepts PDF, JPG, and PNG files up to 10 MB each.
+
 Screen components live in `src/pages/`; reusable UI and layout components live in `src/components/`. The component responsibilities are:
 
 - `pages/ServiceLanding.jsx`: service cards and landing page composition.
 - `pages/IdentityUpdateFlow.jsx`: route composition and navigation for the identity update process.
 - `pages/VerificationPage.jsx`: account lookup feedback, OTP instructions, and verification flow.
-- `pages/UpdateForm.jsx`: identity details, uploads, consent controls, and submit action.
+- `pages/UpdateForm.jsx`: identity details, uploads, terms acceptance, and submit action.
 - `pages/LegalPage.jsx`: terms and data consent screens.
 - `components/ui/OtpInput.jsx`: six digit OTP entry UI and focus movement.
 - `components/UploadBox.jsx`: file chooser, drag-and-drop, file validation, and removal.

@@ -626,7 +626,9 @@ a {
   font-size: 12px;
 }
 .attached-file {
+  position: relative;
   min-height: 109px;
+  padding: 28px 12px 12px;
   background: #edf8fe;
   border: 1px dashed #a4c7dd;
   color: #3b4e57;
@@ -653,7 +655,14 @@ a {
 }
 .attached-file button {
   position: absolute;
-  margin: -75px 0 0 45%;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   border: 0;
   background: none;
   color: #52636a;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import IdentityUpdateContext from './identityUpdateContext.js'
 import MockBankServer from '../services/MockBankServer.js'
 
@@ -11,7 +11,8 @@ export default function IdentityUpdateProvider({ children }) {
   const [accountDetails, setAccountDetails] = useState(null)
   const [accountLookupError, setAccountLookupError] = useState('')
   const [isResolvingAccount, setIsResolvingAccount] = useState(false)
-  const [resend, setResend] = useState(false)
+  const [resendAt, setResendAt] = useState(0)
+  const [resendSeconds, setResendSeconds] = useState(0)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [consentAccepted, setConsentAccepted] = useState(false)
   const [formError, setFormError] = useState('')
@@ -28,7 +29,19 @@ export default function IdentityUpdateProvider({ children }) {
     setOtpStatus('idle')
   }
 
-  const sendOtp = async (accountNumber, isResend = false) => {
+  useEffect(() => {
+    if (!resendAt) return undefined
+    const update = () => {
+      const remaining = Math.max(0, Math.ceil((resendAt - Date.now()) / 1000))
+      setResendSeconds(remaining)
+      if (remaining === 0) setResendAt(0)
+    }
+    update()
+    const timer = window.setInterval(update, 250)
+    return () => window.clearInterval(timer)
+  }, [resendAt])
+
+  const sendOtp = async (accountNumber) => {
     const requestId = ++accountRequestId.current
     setIsResolvingAccount(true)
     setAccountLookupError('')
@@ -48,7 +61,8 @@ export default function IdentityUpdateProvider({ children }) {
 
     setAccountDetails(result.account)
     resetOtpVerification()
-    if (isResend) setResend(true)
+    setResendAt(Date.now() + 59000)
+    setResendSeconds(59)
     return true
   }
 
@@ -58,7 +72,8 @@ export default function IdentityUpdateProvider({ children }) {
     setAccountDetails(null)
     setAccountLookupError('')
     resetOtpVerification()
-    setResend(false)
+    setResendAt(0)
+    setResendSeconds(0)
     if (/^\d{10}$/.test(nextAccount)) void sendOtp(nextAccount)
   }
 
@@ -94,7 +109,7 @@ export default function IdentityUpdateProvider({ children }) {
     accountDetails,
     accountLookupError,
     isResolvingAccount,
-    resend,
+    resendSeconds,
     termsAccepted,
     setTermsAccepted,
     consentAccepted,

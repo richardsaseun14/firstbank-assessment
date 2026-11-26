@@ -14,7 +14,6 @@ function UpdateFormFields({
   setFiles,
   termsAccepted,
   setTermsAccepted,
-  setConsentAccepted,
   onBack,
   onOpenLegal,
 }) {
@@ -32,15 +31,7 @@ function UpdateFormFields({
     setDocType(values.docType)
     setFiles(values.files)
     setTermsAccepted(values.termsAccepted)
-    setConsentAccepted(values.consentAccepted)
-  }, [
-    values,
-    setFields,
-    setDocType,
-    setFiles,
-    setTermsAccepted,
-    setConsentAccepted,
-  ])
+  }, [values, setFields, setDocType, setFiles, setTermsAccepted])
 
   return (
     <>
@@ -88,7 +79,16 @@ function UpdateFormFields({
             label="Identity Document type"
             className="large-input form-select"
             value={values.docType}
-            onChange={(event) => setFieldValue('docType', event.target.value)}
+            onChange={(event) => {
+              const docType = event.target.value
+              setFieldValue('docType', docType)
+              if (docType !== values.docType) {
+                setFieldValue('files.front', null, false)
+                setFieldValue('files.back', null, false)
+                setFieldTouched('files.front', false, false)
+                setFieldTouched('files.back', false, false)
+              }
+            }}
           >
             <option value="">Choose Identity Document type</option>
             <option>National ID Card</option>
@@ -106,7 +106,11 @@ function UpdateFormFields({
           />
           <div className="identity-uploads">
             <UploadBox
-              label="Upload your Identity Document (Front)"
+              label={
+                values.docType === 'International Passport'
+                  ? 'Upload your Identity Document (Front)'
+                  : 'Upload your Identity Document'
+              }
               file={values.files.front}
               onFile={(front) => {
                 setFieldTouched('files.front', true)
@@ -115,16 +119,18 @@ function UpdateFormFields({
               validationError={touched.files?.front && errors.files?.front}
               required
             />
-            <UploadBox
-              label="Back"
-              file={values.files.back}
-              onFile={(back) => {
-                setFieldTouched('files.back', true)
-                setFieldValue('files.back', back)
-              }}
-              validationError={touched.files?.back && errors.files?.back}
-              required
-            />
+            {values.docType === 'International Passport' && (
+              <UploadBox
+                label="Back"
+                file={values.files.back}
+                onFile={(back) => {
+                  setFieldTouched('files.back', true)
+                  setFieldValue('files.back', back)
+                }}
+                validationError={touched.files?.back && errors.files?.back}
+                required
+              />
+            )}
           </div>
           <div className="utility-upload">
             <UploadBox
@@ -160,24 +166,6 @@ function UpdateFormFields({
                 {errors.termsAccepted}
               </span>
             )}
-            <label>
-              <input
-                type="checkbox"
-                checked={values.consentAccepted}
-                onBlur={() => setFieldTouched('consentAccepted', true)}
-                onChange={(event) =>
-                  setFieldValue('consentAccepted', event.target.checked)
-                }
-              />
-              <a onClick={() => onOpenLegal('consent')}>
-                Personal Data Processing Consent
-              </a>
-            </label>
-            {touched.consentAccepted && errors.consentAccepted && (
-              <span className="upload-error" role="alert">
-                {errors.consentAccepted}
-              </span>
-            )}
           </div>
           <Button variant="update" type="submit">
             Update
@@ -196,7 +184,6 @@ function UpdateForm(props) {
     docType: props.docType,
     files: props.files,
     termsAccepted: props.termsAccepted,
-    consentAccepted: props.consentAccepted,
   }
   return (
     <Formik

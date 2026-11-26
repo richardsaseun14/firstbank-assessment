@@ -16,7 +16,7 @@ function VerificationPageFields({
   isResolvingAccount,
   onSendOtp,
   onAccountChange,
-  resend,
+  resendSeconds,
   otpError,
   otpStatus,
   resetOtpVerification,
@@ -116,13 +116,16 @@ function VerificationPageFields({
                     Didn’t receive OTP?{' '}
                     <Button
                       className="text-button"
+                      disabled={resendSeconds > 0 || isResolvingAccount}
                       onClick={() => {
                         setFieldValue('otp', '')
                         resetOtpVerification()
-                        void onSendOtp(values.account, true)
+                        void onSendOtp(values.account)
                       }}
                     >
-                      {resend ? 'OTP resent' : 'Resend in 0.56 secs'}
+                      {resendSeconds > 0
+                        ? `Resend in 0:${String(resendSeconds).padStart(2, '0')}`
+                        : 'Resend OTP'}
                     </Button>
                   </span>
                 )}

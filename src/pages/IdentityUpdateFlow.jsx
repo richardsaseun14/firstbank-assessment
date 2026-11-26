@@ -24,10 +24,9 @@ function IdentityUpdateFlow() {
     accountDetails,
     accountLookupError,
     isResolvingAccount,
-    resend,
+    resendSeconds,
     termsAccepted,
     setTermsAccepted,
-    consentAccepted,
     setConsentAccepted,
     formError,
     setFormError,
@@ -79,8 +78,6 @@ function IdentityUpdateFlow() {
         setFiles={setFiles}
         termsAccepted={termsAccepted}
         setTermsAccepted={setTermsAccepted}
-        consentAccepted={consentAccepted}
-        setConsentAccepted={setConsentAccepted}
         formError={formError}
         onSubmit={() => submitForm(location.search)}
         onBack={() => {
@@ -116,7 +113,7 @@ function IdentityUpdateFlow() {
               isResolvingAccount={isResolvingAccount}
               onAccountChange={resetAccountLookup}
               onSendOtp={sendOtp}
-              resend={resend}
+              resendSeconds={resendSeconds}
               otpError={otpError}
               otpStatus={otpStatus}
               resetOtpVerification={resetOtpVerification}
