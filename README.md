@@ -1,69 +1,168 @@
-# FirstBank account maintenance prototype
+# Identity Document Update Portal
 
-React and Vite prototype based on the case study and attached screen references.
+A React prototype of the identity document update flow from the Digital Account Maintenance case study. A customer confirms their account with an OTP, enters their identity details, uploads their documents and submits the request.
 
-## Run
+All bank calls are mocked. No OTPs are sent, no files are uploaded and no account is changed.
 
-Use `nvm install` and `nvm use` to select the Node version in `.nvmrc`, then run `npm install` and `npm run dev`.
+## Quick start
 
-## Included flow
+Requires Node 22 (set in `.nvmrc`).
 
-- Account management service landing page
-- Consent screen before identity update account verification
-- Account number and six digit OTP verification (demo code: 123456)
-- Identity document update form with NIN, document type and number fields
-- Document uploads based on identity type, plus a utility bill upload
-- File type and 10 MB size validation, drag and drop, remove and replace
-- Account maintenance terms and data processing consent screens
-- Terms acceptance on the update form; personal data consent is handled on the earlier consent screen
-- Form validation and successful submission dialog
+```bash
+nvm use
+npm install
+npm run dev
+```
 
-## Routing and code structure
+Demo values:
 
-This is a React single-page application. `BrowserRouter` in `src/main.jsx` reads the browser URL and lets React Router render the matching screen without reloading the document. `src/App.jsx` routes the landing page and mounts the identity update provider; `src/pages/IdentityUpdateFlow.jsx` maps the identity update URLs to page components:
+| Field          | Value                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------- |
+| Account number | `1234567890` (any 10 digits except all zeros)                                          |
+| OTP            | `123456`                                                                               |
+| NIN            | Any 11 digits. The last four pick the mock result (see [Mock results](#mock-results)). |
 
-- `/` — service selection
-- `/identity-update` — account confirmation and OTP, followed by identity details and document uploads on the same page
-- `/identity-update/terms` — account maintenance terms
-- `/identity-update/consent` — personal data consent
+## Scripts
 
-`App.jsx` keeps the service landing page outside the identity update process. The `/identity-update/*` routes are wrapped in `IdentityUpdateProvider`, which owns that process's account, OTP, form, upload, consent, and submission state. The provider stays mounted while navigating between identity update routes, so entered values persist. Other service flows can use separate providers without sharing this state.
+| Command                | What it does                      |
+| ---------------------- | --------------------------------- |
+| `npm run dev`          | Start the dev server              |
+| `npm run build`        | Build for production into `dist/` |
+| `npm run preview`      | Serve the production build        |
+| `npm run lint`         | Run ESLint                        |
+| `npm run format`       | Format all files with Prettier    |
+| `npm run format:check` | Check formatting without writing  |
 
-`IdentityUpdateFlow.jsx` connects the process routes to the provider through `useIdentityUpdate()`. The context and hook live in `src/contexts/identityUpdateContext.js` and `src/contexts/useIdentityUpdate.js`; the provider and process actions live in `src/contexts/IdentityUpdateContext.jsx`.
+## Tech stack
 
-### Mock account and OTP API
+- React 18 and Vite 6
+- React Router 6 for routing
+- Formik for form state and Zod for validation rules
+- Material Design Icons (`@mdi/js`, `@mdi/react`)
+- ESLint and Prettier
 
-`src/services/MockBankServer.js` contains the class used to simulate account and OTP calls. Entering a 10 digit account number starts `confirmAccountAndSendOtp()`. The account input shows a loader while the mock call waits, then the OTP instructions and inputs appear if the account is accepted. The mock accepts any 10 digit number except `0000000000` and returns sample account and masked contact details. Resending the OTP uses the same mock method.
+## User flow
 
-Entering the sixth OTP digit calls `verifyOtp()` automatically. The mock accepts `123456` and rejects other codes. An incorrect code shows an error below the inputs. A correct code replaces the resend prompt with a check mark; after two seconds, the identity fields appear on the same page. These calls do not contact a bank or send real messages; replace the mock class with a real API client when a backend is available.
+1. **Service list (`/`).** The customer selects "Update identification document". The other service cards are placeholders and do nothing.
+2. **Data processing consent (`/identity-update/consent`).** The customer must agree before verification. "I Reject" or Back returns to the service list. Opening `/identity-update` directly redirects here first.
+3. **Account verification (`/identity-update`).**
+   - Entering 10 digits looks up the account automatically. A spinner shows while it loads.
+   - When the account is found, the masked phone number and email appear, with six OTP boxes.
+   - The code is checked as soon as all six digits are entered. Pasting a code fills the boxes.
+   - "Resend OTP" is available after 59 seconds.
+   - A correct code shows a check mark and the form opens one second later. Changing the account number in that second cancels it.
+4. **Update form (same URL).** The customer enters:
+   - NIN (11 digits)
+   - Identity document type and number
+   - Identity document upload: front and back for an international passport, one file for every other type. Changing the type clears these files.
+   - Utility bill upload (always required)
+   - Terms and conditions acceptance. "Accept Terms & Conditions" opens the terms page (`/identity-update/terms`), where "I Agree" ticks the box and "I Reject" clears it.
+5. **Submit.** The request takes about one second, and the button shows "Submitting…". A dialog then shows one of three results:
+   - **Success:** the request is in progress.
+   - **Failure:** the customer is asked to visit a branch.
+   - **Outstanding information:** "Complete now" adds an Outstanding Information section to the form. Occupation and Nature of Business are required; employer name, employer address and annual turnover are optional. Submitting again completes the request.
+6. **Home** returns to the service list and clears everything entered.
 
-For a demo, use account number `1234567890` and OTP `123456`.
+## Mock results
 
-### Document uploads
+`src/services/MockBankServer.js` simulates the bank API with short delays: account lookup 1.2 s, OTP check 0.5 s, submission 1 s.
 
-An international passport requires two identity uploads, front and back. A national ID card, driver's licence, or voter’s card requires one identity upload. A utility bill is required for every document type. Changing the document type clears any previously selected identity files. The form accepts PDF, JPG, and PNG files up to 10 MB each.
+The submission result comes from the last four digits of the NIN:
 
-Screen components live in `src/pages/`; reusable UI and layout components live in `src/components/`. The component responsibilities are:
+| Example NIN   | Result                  |
+| ------------- | ----------------------- |
+| `12345671111` | Success                 |
+| `12345672222` | Failure                 |
+| `12345673333` | Outstanding information |
+| Anything else | Success                 |
 
-- `pages/ServiceLanding.jsx`: service cards and landing page composition.
-- `pages/IdentityUpdateRoute.jsx`: lazily loaded entry for `/identity-update/*`; wraps the flow in `IdentityUpdateProvider`. `App.jsx` loads it with `React.lazy`, so Formik, Zod and the form pages stay out of the initial bundle.
-- `pages/IdentityUpdateFlow.jsx`: route composition and navigation for the identity update process.
-- `pages/VerificationPage.jsx`: account lookup feedback, OTP instructions, and verification flow.
-- `pages/UpdateForm.jsx`: identity details, uploads, terms acceptance, and submit action.
-- `pages/LegalPage.jsx`: terms and data consent screens.
-- `components/ui/OtpInput.jsx`: six digit OTP entry UI and focus movement.
-- `components/UploadBox.jsx`: file chooser, drag-and-drop, file validation, and removal.
-- `components/PortalHeader.jsx`, `PortalFooter.jsx`, `ResultModal.jsx`: shared page chrome and submission feedback.
-- `components/ui/FormField.jsx`: reusable Formik field with inline validation feedback.
-- `formSchema.js`: Zod schemas and Formik validation adapters.
+A URL parameter overrides the NIN. Add it to the service list URL and it is kept for the whole flow:
 
-Icons come from the Material Design Icons package (`@mdi/js` path data rendered with `@mdi/react`).
+- `?mockResult=success`
+- `?mockResult=failure`
+- `?mockResult=additional-document`
+- `?simulateFailure=1` (same as `mockResult=failure`)
 
-### UI atoms: Button
+To connect a real backend, replace `MockBankServer` with an API client that has the same three methods: `confirmAccountAndSendOtp`, `verifyOtp` and `submitIdentityUpdate`.
 
-`src/components/ui/Button.jsx` is the shared button primitive. Use its `variant` prop to apply an established portal style (`primary`, `outline`, `update`, `back`, `icon`, `help`, `continue`, or `upload`) instead of creating a one-off button implementation. It defaults to `type="button"`, which prevents buttons inside forms from submitting by accident; the form's Update action explicitly opts into `type="submit"`. It also forwards standard button props such as `onClick`, `disabled`, and `aria-label`.
+## Validation and error handling
 
-Example:
+| Situation                          | What the user sees                                                                                               |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Invalid form field                 | A message under the field after the user leaves it or submits. Rules are in `src/formSchema.js`.                 |
+| Wrong file type or file over 10 MB | A message under the upload box. PDF, JPG and PNG are accepted.                                                   |
+| Account not found (`0000000000`)   | A message under the account number.                                                                              |
+| Wrong OTP                          | A message under the OTP boxes, with "Cancel Request" to clear them.                                              |
+| Submission failure                 | The failure dialog.                                                                                              |
+| Unexpected render error            | `ErrorBoundary` shows "Something went wrong" with "Try again" and "Return to services", instead of a blank page. |
+
+Responses that arrive after the user has changed the account number or OTP are ignored, so an old response cannot overwrite newer input.
+
+Form fields and upload boxes are linked to their labels and error messages for screen readers. Invalid text fields, selects and the terms checkbox are marked with `aria-invalid`.
+
+## Project structure
+
+```
+src/
+  main.jsx                      Mounts the app inside ErrorBoundary and BrowserRouter
+  App.jsx                       Top-level routes; lazy-loads the identity update flow
+  formSchema.js                 Zod validation rules for both forms
+  index.css                     All styles
+  contexts/
+    IdentityUpdateContext.jsx   Provider: flow state and actions (send OTP, verify, submit)
+    identityUpdateContext.js    The React context object
+    useIdentityUpdate.js        Hook for reading the context
+  pages/
+    ServiceLanding.jsx          Service list
+    IdentityUpdateRoute.jsx     Lazy-loaded entry; wraps the flow in the provider
+    IdentityUpdateFlow.jsx      Routes and navigation inside /identity-update
+    VerificationPage.jsx        Account lookup and OTP
+    UpdateForm.jsx              Identity details, uploads, terms, submit
+    LegalPage.jsx               Terms and consent pages
+  components/
+    ErrorBoundary.jsx           Recovery screen for render errors
+    PageLoader.jsx              Spinner shown while a lazy chunk loads
+    PortalHeader.jsx            Header and portal title bar
+    PortalFooter.jsx            Footer
+    ResultModal.jsx             Submission result dialog
+    UploadBox.jsx               File picker, drag and drop, file checks, remove
+    ui/Button.jsx               Shared button with style variants
+    ui/FormField.jsx            Formik field with label and error message
+    ui/OtpInput.jsx             Six-box OTP input with paste support
+  services/
+    MockBankServer.js           Simulated bank API
+```
+
+## State management
+
+- **Flow state** (account, OTP status, consent, terms, form draft, result) lives in `IdentityUpdateProvider`. The provider wraps only the `/identity-update/*` routes. It stays mounted while the customer moves between verification, terms and consent, and unmounts on return to the service list, which clears the data.
+- **Form state** is handled by Formik inside each page. The update form copies its values to the provider as they change, so they survive a visit to the terms page. It reads them back only when it mounts. It does not use `enableReinitialize`, because that would reset error messages on every keystroke.
+- Another service, such as Address Update, can get its own provider and routes without sharing this state.
+
+## Performance
+
+The identity update flow, including Formik and Zod, is a separate chunk loaded with `React.lazy` when the customer leaves the service list. `PageLoader` shows while it downloads.
+
+Production build, gzipped:
+
+| File                  | Size    |
+| --------------------- | ------- |
+| Initial JS            | 63.7 KB |
+| Identity update chunk | 43.6 KB |
+| CSS                   | 4.3 KB  |
+
+## Responsive layout
+
+Breakpoints are at 1400 px, 850 px and 600 px. Shared container classes in `src/index.css` set the width and side margins for each type of page:
+
+- `.container--wide`: header, title bar, service list
+- `.container--narrow`: verification and update forms
+- `.container--legal`: terms and consent text
+- `.container--footer`: footer
+
+## Shared button
+
+`src/components/ui/Button.jsx` is used for every button. Pick a style with `variant`: `primary`, `outline`, `update`, `back`, `icon`, `help`, `continue` or `upload`. It defaults to `type="button"`, so only the Update button submits the form.
 
 ```jsx
 <Button variant="primary" onClick={acceptTerms}>
@@ -71,26 +170,9 @@ Example:
 </Button>
 ```
 
-The button variants map to the existing portal CSS classes, so the shared component standardizes behavior while the styles remain in `src/index.css`.
+## Limitations
 
-### Layout containers
-
-`src/index.css` defines a reusable `.container` class for centered content with a maximum width and responsive side gutters. The header, portal title bar, and landing service content share `.container--wide`; the footer has its own `.container--footer`. Verification and update forms use `.container--narrow`, while long legal copy uses `.container--legal` for comfortable reading. The gutters adjust at tablet and mobile breakpoints, so each page does not need its own width and margin calculations.
-
-Example: `className="container container--narrow verification-page"` uses the shared layout sizing, while `verification-page` keeps its page-specific vertical spacing.
-
-The project uses mock account and verification details. It does not send real OTPs, save uploaded files, or submit account changes to a banking service.
-
-Open the app with the query string simulateFailure=1 to view the failed submission state.
-
-The mock submission uses the last four digits of the 11-digit NIN. For example:
-
-| Example NIN   | Mock response                    |
-| ------------- | -------------------------------- |
-| `12345671111` | Success                          |
-| `12345672222` | Failure                          |
-| `12345673333` | Outstanding information required |
-
-Other NINs default to success.
-
-Alternatively, add `?mockResult=success`, `?mockResult=failure`, or `?mockResult=additional-document` to the landing page URL. A valid URL parameter overrides the NIN and is preserved through consent, verification, and terms until submission. The additional-document response opens the outstanding information prompt.
+- The bank API is mocked (see [Mock results](#mock-results)).
+- State is kept in memory, so refreshing the page restarts the flow.
+- Only the identity document update service is built.
+- There are no automated tests yet.
