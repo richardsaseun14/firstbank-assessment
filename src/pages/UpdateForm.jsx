@@ -10,9 +10,9 @@ import { validateUpdateForm } from '../formSchema.js'
 
 function UpdateFormFields({
   setFields,
+  outstandingRequired,
   setDocType,
   setFiles,
-  termsAccepted,
   setTermsAccepted,
   onBack,
   onOpenLegal,
@@ -36,11 +36,7 @@ function UpdateFormFields({
 
   return (
     <>
-      <PortalHeader
-        terms={termsAccepted}
-        setTerms={setTermsAccepted}
-        onOpenTerms={() => onOpenLegal('terms')}
-      />
+      <PortalHeader />
       <main className="container container--narrow update-page">
         <div className="update-title">
           <Button
@@ -145,6 +141,60 @@ function UpdateFormFields({
               required
             />
           </div>
+          {outstandingRequired && (
+            <section
+              className="outstanding-information"
+              id="outstanding-information"
+            >
+              <h2>Outstanding Information</h2>
+              <FormField
+                as="select"
+                name="occupation"
+                label="Occupation *"
+                className="large-input form-select"
+              >
+                <option value="">Select your occupation</option>
+                <option>Employed</option>
+                <option>Self-employed</option>
+                <option>Student</option>
+                <option>Retired</option>
+                <option>Other</option>
+              </FormField>
+              <FormField
+                as="select"
+                name="natureOfBusiness"
+                label="Nature of Business *"
+                className="large-input form-select"
+              >
+                <option value="">Select your nature of business</option>
+                <option>Trading</option>
+                <option>Services</option>
+                <option>Manufacturing</option>
+                <option>Other</option>
+              </FormField>
+              <FormField
+                name="employerName"
+                label="Employer Name"
+                placeholder="Enter your employers name"
+              />
+              <FormField
+                name="employerAddress"
+                label="Employer Address"
+                placeholder="Enter your employers address"
+              />
+              <FormField
+                as="select"
+                name="annualTurnover"
+                label="Annual Turn-Over"
+                className="large-input form-select"
+              >
+                <option value="">Select your annual turn-over</option>
+                <option>Below ₦1 million</option>
+                <option>₦1 million – ₦5 million</option>
+                <option>Above ₦5 million</option>
+              </FormField>
+            </section>
+          )}
           <p className="upload-disclaimer">
             Document must be clear, legible and genuine. Upload uprightly
           </p>
@@ -179,6 +229,11 @@ function UpdateFormFields({
 
 function UpdateForm(props) {
   const initialValues = {
+    occupation: '',
+    natureOfBusiness: '',
+    employerName: '',
+    employerAddress: '',
+    annualTurnover: '',
     account: props.account,
     nin: props.fields.nin,
     idNumber: props.fields.idNumber,
@@ -191,7 +246,15 @@ function UpdateForm(props) {
       initialValues={initialValues}
       enableReinitialize
       validateOnBlur
-      validate={validateUpdateForm}
+      validate={(values) => {
+        const errors = validateUpdateForm(values)
+        if (props.outstandingRequired) {
+          if (!values.occupation) errors.occupation = 'Select your occupation.'
+          if (!values.natureOfBusiness)
+            errors.natureOfBusiness = 'Select your nature of business.'
+        }
+        return errors
+      }}
       onSubmit={props.onSubmit}
     >
       <UpdateFormFields {...props} />

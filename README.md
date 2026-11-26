@@ -84,13 +84,12 @@ Open the app with the query string simulateFailure=1 to view the failed submissi
 
 The mock submission uses the last four digits of the 11-digit NIN. For example:
 
-| Example NIN   | Mock response                |
-| ------------- | ---------------------------- |
-| `12345671111` | Success                      |
-| `12345672222` | Failure                      |
-| `12345673333` | Additional document required |
-| `12345674444` | Account information required |
+| Example NIN   | Mock response                    |
+| ------------- | -------------------------------- |
+| `12345671111` | Success                          |
+| `12345672222` | Failure                          |
+| `12345673333` | Outstanding information required |
 
 Other NINs default to success.
 
-Alternatively, add `?mockResult=success`, `?mockResult=failure`, `?mockResult=additional-document`, or `?mockResult=account-information` to the landing page URL. A valid URL parameter overrides the NIN and is preserved through consent, verification, and terms until submission. The account information form is not yet implemented, so its Complete now button is disabled. The additional-document response can be simulated even when a utility bill has already been attached; Upload now returns to that field.
+Alternatively, add `?mockResult=success`, `?mockResult=failure`, or `?mockResult=additional-document` to the landing page URL. A valid URL parameter overrides the NIN and is preserved through consent, verification, and terms until submission. The additional-document response opens the outstanding information prompt.

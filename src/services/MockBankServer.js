@@ -5,17 +5,11 @@ export default class MockBankServer {
   async submitIdentityUpdate(values, outcome) {
     await wait(1000)
     const ninOutcomes = {
-      '1111': 'success',
-      '2222': 'failure',
-      '3333': 'additional-document',
-      '4444': 'account-information',
+      1111: 'success',
+      2222: 'failure',
+      3333: 'additional-document',
     }
-    const outcomes = [
-      'success',
-      'failure',
-      'additional-document',
-      'account-information',
-    ]
+    const outcomes = ['success', 'failure', 'additional-document']
     return {
       status: outcomes.includes(outcome)
         ? outcome

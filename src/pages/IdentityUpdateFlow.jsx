@@ -38,6 +38,8 @@ function IdentityUpdateFlow() {
     setFiles,
     modal,
     setModal,
+    outstandingRequired,
+    setOutstandingRequired,
     sendOtp,
     resetAccountLookup,
     verifyOtp,
@@ -76,6 +78,7 @@ function IdentityUpdateFlow() {
     <>
       <UpdateForm
         account={account}
+        outstandingRequired={outstandingRequired}
         fields={fields}
         setFields={setFields}
         docType={docType}
@@ -88,6 +91,7 @@ function IdentityUpdateFlow() {
         onSubmit={(values) => submitForm(values, location.search)}
         onBack={() => {
           resetOtpVerification()
+          setOutstandingRequired(false)
           setFormUnlocked(false)
         }}
         onOpenLegal={go}
@@ -95,15 +99,20 @@ function IdentityUpdateFlow() {
       <ResultModal
         type={modal}
         onClose={() => setModal('')}
-        onSkip={() => setModal('success')}
-        onUpload={() => {
+        onComplete={() => {
           setModal('')
-          document
-            .getElementById('utility-upload')
-            ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          setOutstandingRequired(true)
+          window.setTimeout(
+            () =>
+              document
+                .getElementById('outstanding-information')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+            0,
+          )
         }}
         onHome={() => {
           setModal('')
+          setOutstandingRequired(false)
           go('landing')
         }}
       />

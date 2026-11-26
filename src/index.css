@@ -1151,3 +1151,50 @@ a {
     width: 50%;
   }
 }
+
+.outstanding-information {
+  margin-top: 48px;
+}
+.outstanding-information h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 24px;
+}
+.outstanding-information > label {
+  display: block;
+  color: #777;
+  font-size: 15px;
+  margin: 21px 0 9px;
+}
+
+.result-modal--outstanding {
+  min-height: 410px;
+  display: flex;
+  flex-direction: column;
+  padding: 55px 25px 40px;
+  box-shadow: none;
+}
+.result-modal--outstanding h2 {
+  max-width: 390px;
+  margin: 0 auto 18px;
+  line-height: 1.45;
+}
+.outstanding-list {
+  width: min(290px, 100%);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  color: #626973;
+  font-size: 14px;
+  line-height: 29px;
+}
+.outstanding-list span {
+  color: #e32929;
+}
+.result-modal--outstanding .result-actions {
+  margin-top: auto;
+}
+.result-modal--outstanding .result-actions button {
+  width: 100%;
+}

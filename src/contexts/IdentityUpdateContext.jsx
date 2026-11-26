@@ -20,6 +20,7 @@ export default function IdentityUpdateProvider({ children }) {
   const [fields, setFields] = useState({ nin: '', idNumber: '' })
   const [files, setFiles] = useState({ front: null, back: null, utility: null })
   const [modal, setModal] = useState('')
+  const [outstandingRequired, setOutstandingRequired] = useState(false)
   const accountRequestId = useRef(0)
   const otpRequestId = useRef(0)
 
@@ -100,7 +101,13 @@ export default function IdentityUpdateProvider({ children }) {
       (params.get('simulateFailure') === '1' ? 'failure' : undefined)
     try {
       const result = await mockBankServer.submitIdentityUpdate(values, outcome)
-      setModal(result.status)
+      if (result.status === 'additional-document' && !outstandingRequired) {
+        setModal(result.status)
+      } else {
+        setModal(
+          result.status === 'additional-document' ? 'success' : result.status,
+        )
+      }
     } catch {
       setModal('failure')
     }
@@ -129,6 +136,8 @@ export default function IdentityUpdateProvider({ children }) {
     setFiles,
     modal,
     setModal,
+    outstandingRequired,
+    setOutstandingRequired,
     sendOtp,
     resetAccountLookup,
     verifyOtp,

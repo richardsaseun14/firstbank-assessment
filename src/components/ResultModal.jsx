@@ -1,54 +1,45 @@
 import React from 'react'
 import Icon from '@mdi/react'
-import { mdiCheckCircleOutline, mdiClose, mdiInformationOutline } from '@mdi/js'
+import { mdiCheckCircleOutline, mdiClose } from '@mdi/js'
 import Button from './ui/Button.jsx'
 
-function ResultModal({ type, onClose, onHome, onSkip, onUpload }) {
+function ResultModal({ type, onClose, onHome, onComplete }) {
   if (!type) return null
   return (
     <div className="modal-scrim" role="presentation">
       <section
-        className="result-modal"
+        className={`result-modal${type === 'additional-document' ? ' result-modal--outstanding' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="result-title"
       >
-        {type === 'account-information' ? (
+        {type === 'additional-document' ? (
           <>
             <h2 id="result-title">
               Please proceed to update information on your account
             </h2>
-            <p>
-              Occupation (compulsory)
-              <br />
-              Nature of Business (compulsory)
-              <br />
-              Employer Name
-              <br />
-              Employer Address
-              <br />
-              Annual Turn-Over
-            </p>
+            <ul className="outstanding-list">
+              <li>
+                Occupation (
+                <strong>
+                  <em>compulsory</em>
+                </strong>
+                <span>*</span>)
+              </li>
+              <li>
+                Nature of Business (
+                <strong>
+                  <em>compulsory</em>
+                </strong>
+                <span>*</span>)
+              </li>
+              <li>Employer Name</li>
+              <li>Employer Address</li>
+              <li>Annual Turn-Over</li>
+            </ul>
             <div className="result-actions">
-              <Button variant="outline" onClick={onClose}>
-                Close
-              </Button>
-              <Button variant="primary" disabled>
+              <Button variant="primary" onClick={onComplete}>
                 Complete now
-              </Button>
-            </div>
-          </>
-        ) : type === 'additional-document' ? (
-          <>
-            <Icon path={mdiInformationOutline} size={2.6} color="#1769ff" />
-            <h2 id="result-title">Additional document required</h2>
-            <p>Utility bill (less than six months)</p>
-            <div className="result-actions">
-              <Button variant="outline" onClick={onSkip}>
-                Skip for now
-              </Button>
-              <Button variant="primary" onClick={onUpload}>
-                Upload now
               </Button>
             </div>
           </>
