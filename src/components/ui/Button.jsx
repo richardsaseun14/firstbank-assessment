@@ -13,9 +13,19 @@ const variantClasses = {
 }
 
 /** Shared button primitive. Variants reuse the portal's existing visual styles. */
-function Button({ variant, className = '', type = 'button', children, ...props }) {
+function Button({
+  variant,
+  className = '',
+  type = 'button',
+  children,
+  ...props
+}) {
   const classes = clsx('button', variantClasses[variant], className)
-  return <button type={type} className={classes} {...props}>{children}</button>
+  return (
+    <button type={type} className={classes} {...props}>
+      {children}
+    </button>
+  )
 }
 
 export default Button

@@ -4,7 +4,7 @@ React and Vite prototype based on the case study and attached screen references.
 
 ## Run
 
-Run npm install, then npm run dev.
+Use `nvm install` and `nvm use` to select the Node version in `.nvmrc`, then run `npm install` and `npm run dev`.
 
 ## Included flow
 
